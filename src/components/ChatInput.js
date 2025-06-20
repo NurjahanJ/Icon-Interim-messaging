@@ -113,15 +113,15 @@ const ChatInput = ({ onSendMessage, disabled }) => {
   };
 
   return (
-    <div className={`p-4 border-t ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
+    <div className={`p-4 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
       <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
-        <div className="relative flex items-end">
+        <div className={`relative flex items-center rounded-full border ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-200'} shadow-sm`}>
           {/* Plus button for file uploads */}
-          <div className="relative mr-2 mb-2">
+          <div className="relative ml-3">
             <button
               type="button"
               onClick={handleFileButtonClick}
-              className={`p-2 rounded-full ${darkMode ? 'bg-gray-700 text-gray-200 hover:bg-gray-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+              className={`p-2 ${darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-500 hover:text-gray-700'}`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -130,7 +130,7 @@ const ChatInput = ({ onSendMessage, disabled }) => {
             
             {/* File upload menu */}
             {isFileMenuOpen && (
-              <div className={`absolute bottom-full left-0 mb-2 rounded-md shadow-lg ${darkMode ? 'bg-gray-700' : 'bg-white'} border ${darkMode ? 'border-gray-600' : 'border-gray-200'}`}>
+              <div className={`absolute bottom-full left-0 mb-2 rounded-lg shadow-lg ${darkMode ? 'bg-gray-700' : 'bg-white'} border ${darkMode ? 'border-gray-600' : 'border-gray-200'}`}>
                 <div className="py-1">
                   <button
                     type="button"
@@ -167,14 +167,14 @@ const ChatInput = ({ onSendMessage, disabled }) => {
             placeholder={
               hasReachedLimit 
                 ? "You've reached your daily limit of prompts" 
-                : "Type your message here..."
+                : "Ask anything"
             }
             disabled={disabled || hasReachedLimit}
-            className={`w-full p-3 pr-24 rounded-lg resize-none max-h-[200px] ${
+            className={`w-full p-4 pr-24 resize-none max-h-[200px] ${
               darkMode 
-                ? 'bg-gray-700 text-white placeholder-gray-400 border-gray-600' 
-                : 'bg-white text-gray-900 placeholder-gray-500 border-gray-300'
-            } border focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                ? 'bg-gray-700 text-white placeholder-gray-400' 
+                : 'bg-white text-gray-900 placeholder-gray-500'
+            } border-0 focus:ring-0 focus:outline-none rounded-full`}
             rows="1"
           />
           
@@ -183,13 +183,13 @@ const ChatInput = ({ onSendMessage, disabled }) => {
             type="button"
             onClick={toggleSpeechRecognition}
             disabled={disabled || hasReachedLimit}
-            className={`absolute right-14 bottom-2 p-2 rounded-lg ${
+            className={`p-2 mr-1 ${
               disabled || hasReachedLimit
                 ? 'opacity-50 cursor-not-allowed'
-                : 'hover:bg-opacity-80'
+                : ''
             } ${
               isListening
-                ? (darkMode ? 'bg-red-600 text-white' : 'bg-red-500 text-white')
+                ? (darkMode ? 'text-red-400' : 'text-red-500')
                 : (darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-500 hover:text-gray-700')
             }`}
           >
@@ -198,27 +198,27 @@ const ChatInput = ({ onSendMessage, disabled }) => {
             </svg>
           </button>
           
-          {/* Send button */}
+          {/* Send button - replaced with up arrow button */}
           <button
             type="submit"
             disabled={!message.trim() || disabled || hasReachedLimit}
-            className={`absolute right-2 bottom-2 p-2 rounded-lg ${
+            className={`p-2 mr-2 rounded-full ${
               !message.trim() || disabled || hasReachedLimit
                 ? 'opacity-50 cursor-not-allowed'
-                : 'hover:bg-opacity-80'
+                : ''
             } ${
               darkMode 
-                ? 'bg-blue-600 text-white' 
-                : 'bg-blue-500 text-white'
+                ? 'bg-gray-500 text-white hover:bg-gray-400' 
+                : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
             }`}
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+              <path fillRule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
             </svg>
           </button>
         </div>
         <div className={`text-xs mt-2 text-center ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-          {disabled ? 'Processing your request...' : 'Press Enter to send, Shift+Enter for a new line'}
+          {disabled ? 'Processing your request...' : ''}
         </div>
       </form>
     </div>
