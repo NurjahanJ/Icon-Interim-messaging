@@ -25,5 +25,8 @@ yarn-error.log*
 # IDE specific files
 .idea/
 .vscode/
+
+# Work progress tracking
+work_progress.txt
 *.swp
 *.swo
