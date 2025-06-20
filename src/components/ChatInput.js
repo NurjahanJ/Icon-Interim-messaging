@@ -87,9 +87,9 @@ const ChatInput = ({ onSendMessage, disabled }) => {
     setIsFileMenuOpen(!isFileMenuOpen);
   };
   
-  const handleFileUpload = (type) => {
+  const handleFileUpload = () => {
     if (fileInputRef.current) {
-      fileInputRef.current.accept = type === 'image' ? 'image/*' : '*/*';
+      fileInputRef.current.accept = '*/*';
       fileInputRef.current.click();
     }
     setIsFileMenuOpen(false);
@@ -134,17 +134,14 @@ const ChatInput = ({ onSendMessage, disabled }) => {
                 <div className="py-1">
                   <button
                     type="button"
-                    onClick={() => handleFileUpload('image')}
-                    className={`block px-4 py-2 text-sm w-full text-left ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`}
+                    onClick={handleFileUpload}
+                    className={`flex items-center px-5 py-3 text-sm w-full text-left ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`}
                   >
-                    Upload Image
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleFileUpload('file')}
-                    className={`block px-4 py-2 text-sm w-full text-left ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`}
-                  >
-                    Upload Document
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 3H12H8C6.34315 3 5 4.34315 5 6V18C5 19.6569 6.34315 21 8 21H16C17.6569 21 19 19.6569 19 18V8.625M13.5 3L19 8.625M13.5 3V7.625C13.5 8.17728 13.9477 8.625 14.5 8.625H19" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 11v6M9 14h6" />
+                    </svg>
+                    Add photos and files
                   </button>
                 </div>
               </div>
