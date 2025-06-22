@@ -128,15 +128,29 @@ const ChatInput = ({ onSendMessage, disabled }) => {
   return (
     <div className={`p-4 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
       <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
-        <div className={`relative rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-200'} shadow-sm overflow-hidden`}>
-          {/* Placeholder text at the top - clickable */}
-          <div 
-            className="px-4 pt-3 pb-1 cursor-text" 
-            onClick={handlePlaceholderClick}
-          >
-            <div className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'} ${isInputActive || message ? 'opacity-50' : ''}`}>
-              {hasReachedLimit ? "You've reached your daily limit of prompts" : "Ask anything"}
-            </div>
+        <div className={`relative rounded-2xl border ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-200'} shadow-sm overflow-hidden`}>
+          {/* Input area that replaces 'Ask anything' with user text */}
+          <div className="px-4 pt-3 pb-2 cursor-text" onClick={handlePlaceholderClick}>
+            {message || isInputActive ? (
+              <textarea
+                ref={textareaRef}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={handleKeyDown}
+                onFocus={() => setIsInputActive(true)}
+                onBlur={() => setIsInputActive(message.length > 0)}
+                placeholder=""
+                disabled={disabled || hasReachedLimit}
+                className={`w-full resize-none bg-transparent border-0 focus:ring-0 focus:outline-none ${darkMode ? 'text-white' : 'text-gray-900'} p-0 m-0`}
+                rows="1"
+                style={{ minHeight: '24px' }}
+                autoFocus
+              />
+            ) : (
+              <div className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>
+                {hasReachedLimit ? "You've reached your daily limit of prompts" : "Ask anything"}
+              </div>
+            )}
           </div>
           
           {/* Bottom row with buttons */}
@@ -191,22 +205,8 @@ const ChatInput = ({ onSendMessage, disabled }) => {
               <span className="ml-1 text-sm">Tools</span>
             </button>
             
-            {/* Message input area */}
-            <div className="flex-grow px-2" onClick={handlePlaceholderClick}>
-              <textarea
-                ref={textareaRef}
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                onKeyDown={handleKeyDown}
-                onFocus={() => setIsInputActive(true)}
-                onBlur={() => setIsInputActive(message.length > 0)}
-                placeholder={isInputActive || message ? '' : ''}
-                disabled={disabled || hasReachedLimit}
-                className={`w-full resize-none bg-transparent border-0 focus:ring-0 focus:outline-none ${darkMode ? 'text-white' : 'text-gray-900'} py-2`}
-                rows="1"
-                style={{ minHeight: '24px' }}
-              />
-            </div>
+            {/* Hidden spacer to maintain layout */}
+            <div className="flex-grow px-2"></div>
             
             {/* Microphone button */}
             <button
