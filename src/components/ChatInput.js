@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useTheme } from '../contexts/ThemeContext';
 import { usePromptCount } from '../contexts/PromptCountContext';
 
 const ChatInput = ({ onSendMessage, disabled }) => {
@@ -16,7 +15,6 @@ const ChatInput = ({ onSendMessage, disabled }) => {
   const fileButtonRef = useRef(null);
   const toolsMenuRef = useRef(null);
   const toolsButtonRef = useRef(null);
-  const { darkMode } = useTheme();
   const { hasReachedLimit } = usePromptCount();
   
   // Auto-resize textarea as content grows
@@ -156,21 +154,9 @@ const ChatInput = ({ onSendMessage, disabled }) => {
   };
   
   const handleFileUpload = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.accept = 'image/*,.pdf,.doc,.docx,.txt';
-      fileInputRef.current.click();
-    }
+    // This would handle the actual file upload logic
+    console.log('File upload functionality would go here');
     setIsFileMenuOpen(false);
-  };
-  
-  const handleFileInputChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // Here you would typically upload the file to your server
-      // For now, we'll just add a placeholder message
-      const fileType = file.type.startsWith('image/') ? 'image' : 'file';
-      setMessage(`[Uploaded ${fileType}: ${file.name}]`);
-    }
   };
 
   const handleKeyDown = (e) => {
@@ -181,9 +167,9 @@ const ChatInput = ({ onSendMessage, disabled }) => {
   };
 
   return (
-    <div className={`p-4 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
+    <div className="p-4 bg-white">
       <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
-        <div className={`relative rounded-2xl border ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-200'} shadow-sm overflow-hidden`}>
+        <div className="relative rounded-2xl border bg-white border-gray-200 shadow-sm overflow-hidden">
           {/* Input area that replaces 'Ask anything' with user text */}
           <div className="px-4 pt-3 pb-2 cursor-text" onClick={handlePlaceholderClick}>
             {message || isInputActive ? (
@@ -196,13 +182,13 @@ const ChatInput = ({ onSendMessage, disabled }) => {
                 onBlur={() => setIsInputActive(message.length > 0)}
                 placeholder=""
                 disabled={disabled || hasReachedLimit}
-                className={`w-full resize-none bg-transparent border-0 focus:ring-0 focus:outline-none ${darkMode ? 'text-white' : 'text-gray-900'} p-0 m-0`}
+                className="w-full resize-none bg-transparent border-0 focus:ring-0 focus:outline-none text-gray-900 p-0 m-0"
                 rows="1"
                 style={{ minHeight: '24px' }}
                 autoFocus
               />
             ) : (
-              <div className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>
+              <div className="text-sm text-gray-500">
                 {hasReachedLimit ? "You've reached your daily limit of prompts" : "Ask anything"}
               </div>
             )}
@@ -216,7 +202,7 @@ const ChatInput = ({ onSendMessage, disabled }) => {
                 type="button"
                 ref={fileButtonRef}
                 onClick={handleFileButtonClick}
-                className={`p-2 ${darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-500 hover:text-gray-700'}`}
+                className="p-2 text-gray-500 hover:text-gray-700"
                 disabled={disabled || hasReachedLimit}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -226,9 +212,9 @@ const ChatInput = ({ onSendMessage, disabled }) => {
               
               {/* File upload menu */}
               {isFileMenuOpen && (
-                <div ref={fileMenuRef} className={`fixed w-56 rounded-md shadow-lg ${darkMode ? 'bg-gray-700' : 'bg-white'} ring-1 ring-black ring-opacity-5 z-50`} style={{ top: `${fileMenuPosition.top}px`, left: `${fileMenuPosition.left}px`, maxHeight: '300px', overflowY: 'auto', transform: 'translateY(-100%)', marginTop: '-10px' }}>
+                <div ref={fileMenuRef} className="fixed w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50" style={{ top: `${fileMenuPosition.top}px`, left: `${fileMenuPosition.left}px`, maxHeight: '300px', overflowY: 'auto', transform: 'translateY(-100%)', marginTop: '-10px' }}>
                 <div className="py-1" role="menu" aria-orientation="vertical">
-                  <label htmlFor="file-upload" className={`flex items-center px-4 py-2 text-sm cursor-pointer whitespace-nowrap ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`} role="menuitem">
+                  <label htmlFor="file-upload" className="flex items-center px-4 py-2 text-sm cursor-pointer whitespace-nowrap text-gray-700 hover:bg-gray-100" role="menuitem">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-3">
                       <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                       <line x1="7" y1="12" x2="17" y2="12"></line>
@@ -255,7 +241,7 @@ const ChatInput = ({ onSendMessage, disabled }) => {
                 type="button"
                 ref={toolsButtonRef}
                 onClick={handleToolsButtonClick}
-                className={`flex items-center ml-2 ${darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-500 hover:text-gray-700'}`}
+                className="flex items-center ml-2 text-gray-500 hover:text-gray-700"
                 disabled={disabled || hasReachedLimit}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -266,16 +252,16 @@ const ChatInput = ({ onSendMessage, disabled }) => {
               
               {/* Tools menu */}
               {isToolsMenuOpen && (
-                <div ref={toolsMenuRef} className={`fixed w-64 rounded-xl shadow-lg ${darkMode ? 'bg-gray-700' : 'bg-white'} ring-1 ring-black ring-opacity-5 z-50`} style={{ top: `${toolsMenuPosition.top}px`, left: `${toolsMenuPosition.left}px`, maxHeight: '300px', overflowY: 'auto', transform: 'translateY(-100%)', marginTop: '-10px' }}>
+                <div ref={toolsMenuRef} className="fixed w-64 rounded-xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50" style={{ top: `${toolsMenuPosition.top}px`, left: `${toolsMenuPosition.left}px`, maxHeight: '300px', overflowY: 'auto', transform: 'translateY(-100%)', marginTop: '-10px' }}>
                   <div className="py-2" role="menu" aria-orientation="vertical">
-                    <button className={`flex items-center w-full px-4 py-3 text-sm text-left ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`} role="menuitem">
+                    <button className="flex items-center w-full px-4 py-3 text-sm text-left text-gray-700 hover:bg-gray-100" role="menuitem">
                       <svg className="mr-3 h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M9.5 19.5V18H4.5C3.4 18 2.5 17.1 2.5 16V5C2.5 3.9 3.4 3 4.5 3H19.5C20.6 3 21.5 3.9 21.5 5V16C21.5 17.1 20.6 18 19.5 18H14.5V19.5H9.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                         <path d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                       Create an image
                     </button>
-                    <button className={`flex items-center w-full px-4 py-3 text-sm text-left ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`} role="menuitem">
+                    <button className="flex items-center w-full px-4 py-3 text-sm text-left text-gray-700 hover:bg-gray-100" role="menuitem">
                       <svg className="mr-3 h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                         <path d="M3 12H21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -284,7 +270,7 @@ const ChatInput = ({ onSendMessage, disabled }) => {
                       </svg>
                       Search the web
                     </button>
-                    <button className={`flex items-center w-full px-4 py-3 text-sm text-left ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`} role="menuitem">
+                    <button className="flex items-center w-full px-4 py-3 text-sm text-left text-gray-700 hover:bg-gray-100" role="menuitem">
                       <svg className="mr-3 h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M8 18L12 22L16 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                         <path d="M12 2V22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -292,7 +278,7 @@ const ChatInput = ({ onSendMessage, disabled }) => {
                       </svg>
                       Write or code
                     </button>
-                    <button className={`flex items-center w-full px-4 py-3 text-sm text-left ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`} role="menuitem">
+                    <button className="flex items-center w-full px-4 py-3 text-sm text-left text-gray-700 hover:bg-gray-100" role="menuitem">
                       <svg className="mr-3 h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M19.5 14.5V17.5C19.5 18.6046 18.6046 19.5 17.5 19.5H6.5C5.39543 19.5 4.5 18.6046 4.5 17.5V14.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                         <path d="M16.5 10.5L12 14.5L7.5 10.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -319,8 +305,8 @@ const ChatInput = ({ onSendMessage, disabled }) => {
                   : ''
               } ${
                 isListening
-                  ? (darkMode ? 'text-red-400 bg-gray-600' : 'text-red-500 bg-gray-100')
-                  : (darkMode ? 'text-gray-300 hover:bg-gray-600' : 'text-gray-500 hover:bg-gray-100')
+                  ? 'text-red-500 bg-gray-100'
+                  : 'text-gray-500 hover:bg-gray-100'
               }`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -336,11 +322,7 @@ const ChatInput = ({ onSendMessage, disabled }) => {
                 !message.trim() || disabled || hasReachedLimit
                   ? 'opacity-50 cursor-not-allowed'
                   : ''
-              } ${
-                darkMode 
-                  ? 'bg-gray-500 text-white hover:bg-gray-400' 
-                  : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
-              }`}
+              } bg-gray-200 text-gray-600 hover:bg-gray-300`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
@@ -348,7 +330,7 @@ const ChatInput = ({ onSendMessage, disabled }) => {
             </button>
           </div>
         </div>
-        <div className={`text-xs mt-2 text-center ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+        <div className="text-xs mt-2 text-center text-gray-500">
           {disabled ? 'Processing your request...' : ''}
         </div>
       </form>

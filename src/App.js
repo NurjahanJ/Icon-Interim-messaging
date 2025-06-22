@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Header from './components/Header';
-import { useTheme } from './contexts/ThemeContext';
 import { usePromptCount } from './contexts/PromptCountContext';
 import ChatHistory from './components/ChatHistory';
 import ChatInput from './components/ChatInput';
@@ -10,8 +9,7 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
-  const { darkMode } = useTheme();
-  const { incrementCount, hasReachedLimit } = usePromptCount();
+  const { incrementCount } = usePromptCount();
 
   // Scroll to bottom whenever messages change
   useEffect(() => {
@@ -69,12 +67,12 @@ function App() {
   };
 
   return (
-    <div className={`flex flex-col h-screen ${darkMode ? 'bg-gray-900' : 'bg-chatgpt-gray'}`} style={!darkMode ? {backgroundColor: '#FFFFFF'} : {}}>
+    <div className="flex flex-col h-screen bg-white">
       <Header />
       <main className={`flex-1 overflow-hidden flex flex-col max-w-5xl mx-auto w-full ${messages.length === 0 ? 'justify-center' : ''}`}>
         {messages.length === 0 && (
           <div className="text-center mb-5">
-            <h2 className="text-[28px] font-normal mb-3 text-gray-700 dark:text-gray-200">Where should we begin?</h2>
+            <h2 className="text-[28px] font-normal mb-3 text-gray-700">Where should we begin?</h2>
           </div>
         )}
         <div className={`flex flex-col ${messages.length === 0 ? '' : 'flex-1'}`}>
