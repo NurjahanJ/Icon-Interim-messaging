@@ -69,7 +69,7 @@ function App() {
   };
 
   return (
-    <div className={`flex flex-col h-screen ${darkMode ? 'bg-gray-900' : 'bg-chatgpt-gray'}`}>
+    <div className={`flex flex-col h-screen ${darkMode ? 'bg-gray-900' : 'bg-chatgpt-gray'}`} style={!darkMode ? {backgroundColor: '#FFFFFF'} : {}}>
       <Header />
       <main className="flex-1 overflow-hidden flex flex-col max-w-5xl mx-auto w-full">
         <ChatHistory 
