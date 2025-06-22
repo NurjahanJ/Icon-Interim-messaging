@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Header from './components/Header';
-import { usePromptCount } from './contexts/PromptCountContext';
 import ChatHistory from './components/ChatHistory';
 import ChatInput from './components/ChatInput';
+import { usePromptCount } from './contexts/PromptCountContext';
 import { sendMessage as sendApiMessage } from './services/api';
 
 function App() {
@@ -71,8 +71,8 @@ function App() {
       <Header />
       <main className={`flex-1 overflow-hidden flex flex-col max-w-5xl mx-auto w-full ${messages.length === 0 ? 'justify-center' : ''}`}>
         {messages.length === 0 && (
-          <div className="text-center mb-5">
-            <h2 className="text-[28px] font-normal mb-3 text-gray-700">Where should we begin?</h2>
+          <div className="text-center mb-2">
+            <h2 className="text-[28px] font-normal mb-1 text-gray-700">Where should we begin?</h2>
           </div>
         )}
         <div className={`flex flex-col ${messages.length === 0 ? '' : 'flex-1'}`}>

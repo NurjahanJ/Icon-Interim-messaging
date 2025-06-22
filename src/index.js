@@ -5,13 +5,16 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { PromptCountProvider } from './contexts/PromptCountContext';
+import { ModelProvider } from './contexts/ModelContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <ThemeProvider>
       <PromptCountProvider>
-        <App />
+        <ModelProvider>
+          <App />
+        </ModelProvider>
       </PromptCountProvider>
     </ThemeProvider>
   </React.StrictMode>
