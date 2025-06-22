@@ -6,11 +6,15 @@ const ChatInput = ({ onSendMessage, disabled }) => {
   const [message, setMessage] = useState('');
   const [isListening, setIsListening] = useState(false);
   const [isFileMenuOpen, setIsFileMenuOpen] = useState(false);
+  const [isToolsMenuOpen, setIsToolsMenuOpen] = useState(false);
   const [isInputActive, setIsInputActive] = useState(false);
+  const [toolsMenuPosition, setToolsMenuPosition] = useState({ top: 0, left: 0 });
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
   const fileMenuRef = useRef(null);
   const fileButtonRef = useRef(null);
+  const toolsMenuRef = useRef(null);
+  const toolsButtonRef = useRef(null);
   const { darkMode } = useTheme();
   const { hasReachedLimit } = usePromptCount();
   
@@ -23,9 +27,10 @@ const ChatInput = ({ onSendMessage, disabled }) => {
     }
   }, [message]);
   
-  // Handle clicks outside the file menu to close it
+  // Handle clicks outside menus to close them
   useEffect(() => {
     const handleClickOutside = (event) => {
+      // Close file menu when clicking outside
       if (isFileMenuOpen && 
           fileMenuRef.current && 
           !fileMenuRef.current.contains(event.target) &&
@@ -33,13 +38,22 @@ const ChatInput = ({ onSendMessage, disabled }) => {
           !fileButtonRef.current.contains(event.target)) {
         setIsFileMenuOpen(false);
       }
+      
+      // Close tools menu when clicking outside
+      if (isToolsMenuOpen && 
+          toolsMenuRef.current && 
+          !toolsMenuRef.current.contains(event.target) &&
+          toolsButtonRef.current && 
+          !toolsButtonRef.current.contains(event.target)) {
+        setIsToolsMenuOpen(false);
+      }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isFileMenuOpen]);
+  }, [isFileMenuOpen, isToolsMenuOpen]);
   
   // Focus the textarea when clicked
   const handlePlaceholderClick = () => {
@@ -118,6 +132,19 @@ const ChatInput = ({ onSendMessage, disabled }) => {
   // File upload functionality
   const handleFileButtonClick = () => {
     setIsFileMenuOpen(!isFileMenuOpen);
+    if (isToolsMenuOpen) setIsToolsMenuOpen(false);
+  };
+  
+  const handleToolsButtonClick = () => {
+    if (!isToolsMenuOpen && toolsButtonRef.current) {
+      const rect = toolsButtonRef.current.getBoundingClientRect();
+      setToolsMenuPosition({
+        top: rect.top - 10,
+        left: rect.left
+      });
+    }
+    setIsToolsMenuOpen(!isToolsMenuOpen);
+    if (isFileMenuOpen) setIsFileMenuOpen(false);
   };
   
   const handleFileUpload = () => {
@@ -191,7 +218,7 @@ const ChatInput = ({ onSendMessage, disabled }) => {
               
               {/* File upload menu */}
               {isFileMenuOpen && (
-                <div ref={fileMenuRef} className={`absolute bottom-full left-0 mb-2 w-56 rounded-md shadow-lg ${darkMode ? 'bg-gray-700' : 'bg-white'} ring-1 ring-black ring-opacity-5`}>
+                <div ref={fileMenuRef} className={`absolute bottom-full left-0 mb-2 w-56 rounded-md shadow-lg ${darkMode ? 'bg-gray-700' : 'bg-white'} ring-1 ring-black ring-opacity-5 z-50`} style={{ maxHeight: '90vh', overflowY: 'auto' }}>
                 <div className="py-1" role="menu" aria-orientation="vertical">
                   <label htmlFor="file-upload" className={`flex items-center px-4 py-2 text-sm cursor-pointer whitespace-nowrap ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`} role="menuitem">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-3">
@@ -215,16 +242,60 @@ const ChatInput = ({ onSendMessage, disabled }) => {
             </div>
             
             {/* Tools button */}
-            <button
-              type="button"
-              className={`flex items-center ml-2 ${darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-500 hover:text-gray-700'}`}
-              disabled={disabled || hasReachedLimit}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
-              </svg>
-              <span className="ml-1 text-sm">Tools</span>
-            </button>
+            <div className="relative">
+              <button
+                type="button"
+                ref={toolsButtonRef}
+                onClick={handleToolsButtonClick}
+                className={`flex items-center ml-2 ${darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-500 hover:text-gray-700'}`}
+                disabled={disabled || hasReachedLimit}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+                </svg>
+                <span className="ml-1 text-sm">Tools</span>
+              </button>
+              
+              {/* Tools menu */}
+              {isToolsMenuOpen && (
+                <div ref={toolsMenuRef} className={`fixed w-64 rounded-xl shadow-lg ${darkMode ? 'bg-gray-700' : 'bg-white'} ring-1 ring-black ring-opacity-5 z-50`} style={{ top: `${toolsMenuPosition.top}px`, left: `${toolsMenuPosition.left}px`, maxHeight: '300px', overflowY: 'auto', transform: 'translateY(-100%)' }}>
+                  <div className="py-2" role="menu" aria-orientation="vertical">
+                    <button className={`flex items-center w-full px-4 py-3 text-sm text-left ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`} role="menuitem">
+                      <svg className="mr-3 h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9.5 19.5V18H4.5C3.4 18 2.5 17.1 2.5 16V5C2.5 3.9 3.4 3 4.5 3H19.5C20.6 3 21.5 3.9 21.5 5V16C21.5 17.1 20.6 18 19.5 18H14.5V19.5H9.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      Create an image
+                    </button>
+                    <button className={`flex items-center w-full px-4 py-3 text-sm text-left ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`} role="menuitem">
+                      <svg className="mr-3 h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M3 12H21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M12 3C14.5013 5.46452 15.9228 8.66283 16 12C15.9228 15.3372 14.5013 18.5355 12 21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M12 3C9.49872 5.46452 8.07725 8.66283 8 12C8.07725 15.3372 9.49872 18.5355 12 21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      Search the web
+                    </button>
+                    <button className={`flex items-center w-full px-4 py-3 text-sm text-left ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`} role="menuitem">
+                      <svg className="mr-3 h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 18L12 22L16 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M12 2V22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M7 5L12 2L17 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      Write or code
+                    </button>
+                    <button className={`flex items-center w-full px-4 py-3 text-sm text-left ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`} role="menuitem">
+                      <svg className="mr-3 h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19.5 14.5V17.5C19.5 18.6046 18.6046 19.5 17.5 19.5H6.5C5.39543 19.5 4.5 18.6046 4.5 17.5V14.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M16.5 10.5L12 14.5L7.5 10.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M12 14.5V4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      Run deep research
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
             
             {/* Hidden spacer to maintain layout */}
             <div className="flex-grow px-2"></div>
