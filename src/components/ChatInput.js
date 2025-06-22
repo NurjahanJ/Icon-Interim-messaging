@@ -182,7 +182,7 @@ const ChatInput = ({ onSendMessage, disabled }) => {
 
   return (
     <div className={`p-4 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
-      <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
+      <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
         <div className={`relative rounded-2xl border ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-200'} shadow-sm overflow-hidden`}>
           {/* Input area that replaces 'Ask anything' with user text */}
           <div className="px-4 pt-3 pb-2 cursor-text" onClick={handlePlaceholderClick}>
