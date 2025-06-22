@@ -71,12 +71,19 @@ function App() {
   return (
     <div className={`flex flex-col h-screen ${darkMode ? 'bg-gray-900' : 'bg-chatgpt-gray'}`} style={!darkMode ? {backgroundColor: '#FFFFFF'} : {}}>
       <Header />
-      <main className="flex-1 overflow-hidden flex flex-col max-w-5xl mx-auto w-full">
-        <ChatHistory 
-          messages={messages} 
-          loading={loading} 
-          messagesEndRef={messagesEndRef} 
-        />
+      <main className={`flex-1 overflow-hidden flex flex-col max-w-5xl mx-auto w-full ${messages.length === 0 ? 'justify-center' : ''}`}>
+        {messages.length === 0 && (
+          <div className="text-center mb-5">
+            <h2 className="text-[28px] font-normal mb-3 text-gray-700 dark:text-gray-200">Where should we begin?</h2>
+          </div>
+        )}
+        <div className={`flex flex-col ${messages.length === 0 ? '' : 'flex-1'}`}>
+          <ChatHistory 
+            messages={messages} 
+            loading={loading} 
+            messagesEndRef={messagesEndRef} 
+          />
+        </div>
         <ChatInput onSendMessage={handleSendMessage} disabled={loading} />
       </main>
     </div>
