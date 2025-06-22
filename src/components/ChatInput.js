@@ -9,6 +9,8 @@ const ChatInput = ({ onSendMessage, disabled }) => {
   const [isInputActive, setIsInputActive] = useState(false);
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
+  const fileMenuRef = useRef(null);
+  const fileButtonRef = useRef(null);
   const { darkMode } = useTheme();
   const { hasReachedLimit } = usePromptCount();
   
@@ -20,6 +22,24 @@ const ChatInput = ({ onSendMessage, disabled }) => {
       textarea.style.height = `${Math.min(textarea.scrollHeight, 200)}px`;
     }
   }, [message]);
+  
+  // Handle clicks outside the file menu to close it
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isFileMenuOpen && 
+          fileMenuRef.current && 
+          !fileMenuRef.current.contains(event.target) &&
+          fileButtonRef.current && 
+          !fileButtonRef.current.contains(event.target)) {
+        setIsFileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isFileMenuOpen]);
   
   // Focus the textarea when clicked
   const handlePlaceholderClick = () => {
@@ -159,6 +179,7 @@ const ChatInput = ({ onSendMessage, disabled }) => {
             <div className="relative">
               <button
                 type="button"
+                ref={fileButtonRef}
                 onClick={handleFileButtonClick}
                 className={`p-2 ${darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-500 hover:text-gray-700'}`}
                 disabled={disabled || hasReachedLimit}
@@ -170,7 +191,7 @@ const ChatInput = ({ onSendMessage, disabled }) => {
               
               {/* File upload menu */}
               {isFileMenuOpen && (
-                <div className={`absolute bottom-full left-0 mb-2 w-56 rounded-md shadow-lg ${darkMode ? 'bg-gray-700' : 'bg-white'} ring-1 ring-black ring-opacity-5`}>
+                <div ref={fileMenuRef} className={`absolute bottom-full left-0 mb-2 w-56 rounded-md shadow-lg ${darkMode ? 'bg-gray-700' : 'bg-white'} ring-1 ring-black ring-opacity-5`}>
                 <div className="py-1" role="menu" aria-orientation="vertical">
                   <label htmlFor="file-upload" className={`flex items-center px-4 py-2 text-sm cursor-pointer whitespace-nowrap ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`} role="menuitem">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-3">
