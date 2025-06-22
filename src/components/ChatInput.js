@@ -9,6 +9,7 @@ const ChatInput = ({ onSendMessage, disabled }) => {
   const [isToolsMenuOpen, setIsToolsMenuOpen] = useState(false);
   const [isInputActive, setIsInputActive] = useState(false);
   const [toolsMenuPosition, setToolsMenuPosition] = useState({ top: 0, left: 0 });
+  const [fileMenuPosition, setFileMenuPosition] = useState({ top: 0, left: 0 });
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
   const fileMenuRef = useRef(null);
@@ -131,6 +132,13 @@ const ChatInput = ({ onSendMessage, disabled }) => {
   
   // File upload functionality
   const handleFileButtonClick = () => {
+    if (!isFileMenuOpen && fileButtonRef.current) {
+      const rect = fileButtonRef.current.getBoundingClientRect();
+      setFileMenuPosition({
+        top: window.scrollY + rect.top - 10,
+        left: rect.left
+      });
+    }
     setIsFileMenuOpen(!isFileMenuOpen);
     if (isToolsMenuOpen) setIsToolsMenuOpen(false);
   };
@@ -139,7 +147,7 @@ const ChatInput = ({ onSendMessage, disabled }) => {
     if (!isToolsMenuOpen && toolsButtonRef.current) {
       const rect = toolsButtonRef.current.getBoundingClientRect();
       setToolsMenuPosition({
-        top: rect.top - 10,
+        top: window.scrollY + rect.top - 10,
         left: rect.left
       });
     }
@@ -218,7 +226,7 @@ const ChatInput = ({ onSendMessage, disabled }) => {
               
               {/* File upload menu */}
               {isFileMenuOpen && (
-                <div ref={fileMenuRef} className={`absolute bottom-full left-0 mb-2 w-56 rounded-md shadow-lg ${darkMode ? 'bg-gray-700' : 'bg-white'} ring-1 ring-black ring-opacity-5 z-50`} style={{ maxHeight: '90vh', overflowY: 'auto' }}>
+                <div ref={fileMenuRef} className={`fixed w-56 rounded-md shadow-lg ${darkMode ? 'bg-gray-700' : 'bg-white'} ring-1 ring-black ring-opacity-5 z-50`} style={{ top: `${fileMenuPosition.top}px`, left: `${fileMenuPosition.left}px`, maxHeight: '300px', overflowY: 'auto', transform: 'translateY(-100%)', marginTop: '-10px' }}>
                 <div className="py-1" role="menu" aria-orientation="vertical">
                   <label htmlFor="file-upload" className={`flex items-center px-4 py-2 text-sm cursor-pointer whitespace-nowrap ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`} role="menuitem">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-3">
@@ -258,7 +266,7 @@ const ChatInput = ({ onSendMessage, disabled }) => {
               
               {/* Tools menu */}
               {isToolsMenuOpen && (
-                <div ref={toolsMenuRef} className={`fixed w-64 rounded-xl shadow-lg ${darkMode ? 'bg-gray-700' : 'bg-white'} ring-1 ring-black ring-opacity-5 z-50`} style={{ top: `${toolsMenuPosition.top}px`, left: `${toolsMenuPosition.left}px`, maxHeight: '300px', overflowY: 'auto', transform: 'translateY(-100%)' }}>
+                <div ref={toolsMenuRef} className={`fixed w-64 rounded-xl shadow-lg ${darkMode ? 'bg-gray-700' : 'bg-white'} ring-1 ring-black ring-opacity-5 z-50`} style={{ top: `${toolsMenuPosition.top}px`, left: `${toolsMenuPosition.left}px`, maxHeight: '300px', overflowY: 'auto', transform: 'translateY(-100%)', marginTop: '-10px' }}>
                   <div className="py-2" role="menu" aria-orientation="vertical">
                     <button className={`flex items-center w-full px-4 py-3 text-sm text-left ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`} role="menuitem">
                       <svg className="mr-3 h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
