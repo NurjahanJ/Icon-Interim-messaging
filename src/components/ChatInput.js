@@ -128,7 +128,7 @@ const ChatInput = ({ onSendMessage, disabled }) => {
   return (
     <div className={`p-4 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
       <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
-        <div className={`relative rounded-full border ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-200'} shadow-sm`}>
+        <div className={`relative rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-200'} shadow-sm overflow-hidden`}>
           {/* Placeholder text at the top - clickable */}
           <div 
             className="px-4 pt-3 pb-1 cursor-text" 
@@ -141,12 +141,13 @@ const ChatInput = ({ onSendMessage, disabled }) => {
           
           {/* Bottom row with buttons */}
           <div className="flex items-center px-2 py-2">
-            {/* Plus button for file uploads */}
+            {/* File Upload Button */}
             <div className="relative">
               <button
                 type="button"
                 onClick={handleFileButtonClick}
                 className={`p-2 ${darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-500 hover:text-gray-700'}`}
+                disabled={disabled || hasReachedLimit}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -155,35 +156,34 @@ const ChatInput = ({ onSendMessage, disabled }) => {
               
               {/* File upload menu */}
               {isFileMenuOpen && (
-                <div className={`absolute bottom-full left-0 mb-2 rounded-lg shadow-lg ${darkMode ? 'bg-gray-700' : 'bg-white'} border ${darkMode ? 'border-gray-600' : 'border-gray-200'}`} style={{ minWidth: '220px' }}>
-                  <div className="py-1">
-                    <button
-                      type="button"
-                      onClick={handleFileUpload}
-                      className={`flex items-center px-5 py-3 text-sm w-full text-left whitespace-nowrap ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`}
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l4 4v10a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-                      </svg>
-                      Add photos and files
-                    </button>
-                  </div>
+                <div className={`absolute bottom-full left-0 mb-2 w-56 rounded-md shadow-lg ${darkMode ? 'bg-gray-700' : 'bg-white'} ring-1 ring-black ring-opacity-5`}>
+                <div className="py-1" role="menu" aria-orientation="vertical">
+                  <label htmlFor="file-upload" className={`flex items-center px-4 py-2 text-sm cursor-pointer whitespace-nowrap ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`} role="menuitem">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-3">
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                      <line x1="7" y1="12" x2="17" y2="12"></line>
+                      <line x1="12" y1="7" x2="12" y2="17"></line>
+                    </svg>
+                    Add photos and files
+                  </label>
+                  <input
+                    id="file-upload"
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileUpload}
+                    className="hidden"
+                    accept="image/*,.pdf,.doc,.docx,.txt"
+                  />
                 </div>
+              </div>
               )}
-              
-              {/* Hidden file input */}
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileInputChange}
-                className="hidden"
-              />
             </div>
             
             {/* Tools button */}
             <button
               type="button"
               className={`flex items-center ml-2 ${darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-500 hover:text-gray-700'}`}
+              disabled={disabled || hasReachedLimit}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
@@ -191,8 +191,8 @@ const ChatInput = ({ onSendMessage, disabled }) => {
               <span className="ml-1 text-sm">Tools</span>
             </button>
             
-            {/* Textarea for message input - conditionally visible */}
-            <div className="flex-grow px-2">
+            {/* Message input area */}
+            <div className="flex-grow px-2" onClick={handlePlaceholderClick}>
               <textarea
                 ref={textareaRef}
                 value={message}
@@ -200,29 +200,27 @@ const ChatInput = ({ onSendMessage, disabled }) => {
                 onKeyDown={handleKeyDown}
                 onFocus={() => setIsInputActive(true)}
                 onBlur={() => setIsInputActive(message.length > 0)}
+                placeholder={isInputActive || message ? '' : ''}
                 disabled={disabled || hasReachedLimit}
-                className={`w-full resize-none bg-transparent border-0 focus:ring-0 focus:outline-none ${darkMode ? 'text-white' : 'text-gray-900'}`}
+                className={`w-full resize-none bg-transparent border-0 focus:ring-0 focus:outline-none ${darkMode ? 'text-white' : 'text-gray-900'} py-2`}
                 rows="1"
-                style={{ height: isInputActive || message ? 'auto' : '0px', overflow: 'hidden' }}
+                style={{ minHeight: '24px' }}
               />
             </div>
-            
-            {/* Spacer to push buttons to the right */}
-            <div className="flex-grow"></div>
             
             {/* Microphone button */}
             <button
               type="button"
               onClick={toggleSpeechRecognition}
               disabled={disabled || hasReachedLimit}
-              className={`p-2 ${
+              className={`p-2 rounded-full flex items-center justify-center ${
                 disabled || hasReachedLimit
                   ? 'opacity-50 cursor-not-allowed'
                   : ''
               } ${
                 isListening
-                  ? (darkMode ? 'text-red-400' : 'text-red-500')
-                  : (darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-500 hover:text-gray-700')
+                  ? (darkMode ? 'text-red-400 bg-gray-600' : 'text-red-500 bg-gray-100')
+                  : (darkMode ? 'text-gray-300 hover:bg-gray-600' : 'text-gray-500 hover:bg-gray-100')
               }`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
