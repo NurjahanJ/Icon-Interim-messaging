@@ -1,7 +1,7 @@
 import React from 'react';
 
 const MessageBubble = ({ message }) => {
-  const isUser = message.sender === 'user';
+  const isUser = message.role === 'user';
   
   // Format timestamp to a readable format
   const formatTime = (timestamp) => {
@@ -14,13 +14,13 @@ const MessageBubble = ({ message }) => {
   };
 
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
-      <div className={`max-w-[80%] rounded-lg p-3 ${
+    <div className={`flex w-full my-6 ${isUser ? 'justify-end' : 'justify-start'}`}>
+      <div className={`max-w-[80%] rounded-2xl p-4 ${
         isUser
-          ? 'bg-blue-500 text-white'
-          : 'bg-gray-200 text-gray-800'
+          ? 'bg-blue-600 text-white'
+          : 'bg-gray-100 text-gray-800'
       }`}>
-        <div className="whitespace-pre-wrap">{message.text}</div>
+        <div className="whitespace-pre-wrap break-words">{message.content}</div>
         <div className={`text-xs mt-1 text-right ${
           isUser
             ? 'text-blue-200'

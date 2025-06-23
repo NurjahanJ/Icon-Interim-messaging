@@ -5,25 +5,54 @@ import axios from 'axios';
  * This service handles sending messages to the API and receiving responses
  */
 
-// API endpoint for the server proxy
+// API endpoint for the serverless function
 const API_URL = '/api/chat';
 
 /**
- * Send a message to the OpenAI API
- * @param {string} message - The user's message to send to the API
+ * Send a conversation to the OpenAI API
+ * @param {Array} messages - Array of message objects with role and content
  * @param {string} modelId - The ID of the selected model
- * @returns {Promise<string>} - A promise that resolves to the API response text
+ * @returns {Promise<Object>} - A promise that resolves to the API response
  */
-export const sendMessage = async (message, modelId = 'gpt-4o') => {
+export const sendConversation = async (messages, modelId = 'gpt-4o') => {
   try {
-    console.log(`Sending message with model: ${modelId}`);
-    const response = await axios.post(API_URL, { message, modelId });
-    return response.data.message;
+    const response = await axios.post(API_URL, { messages, modelId });
+    return response.data;
   } catch (error) {
-    console.error('Error sending message to API:', error);
+    console.error('Error sending conversation to API:', error);
     throw new Error(
       error.response?.data?.error || 
       'Failed to get a response. Please try again later.'
     );
   }
 };
+
+/**
+ * Format a new user message and add it to the conversation
+ * @param {string} content - The content of the user's message
+ * @returns {Object} - A message object with role and content
+ */
+export const createUserMessage = (content) => ({
+  role: 'user',
+  content
+});
+
+/**
+ * Format a system message
+ * @param {string} content - The content of the system message
+ * @returns {Object} - A message object with role and content
+ */
+export const createSystemMessage = (content) => ({
+  role: 'system',
+  content
+});
+
+/**
+ * Format an assistant message
+ * @param {string} content - The content of the assistant's message
+ * @returns {Object} - A message object with role and content
+ */
+export const createAssistantMessage = (content) => ({
+  role: 'assistant',
+  content
+});
