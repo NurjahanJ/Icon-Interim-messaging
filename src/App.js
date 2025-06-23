@@ -42,7 +42,8 @@ function App() {
       const response = await sendConversation(messagesToSend, modelId);
       
       // Create assistant message
-      const assistantContent = response.message || response.choices?.[0]?.message?.content || 'I apologize, but I couldn\'t generate a response.';
+      // The OpenAI API returns response in format: { choices: [{ message: { content: '...' } }] }
+      const assistantContent = response.choices?.[0]?.message?.content || 'I apologize, but I couldn\'t generate a response.';
       const assistantMessage = createAssistantMessage(assistantContent);
       assistantMessage.timestamp = new Date().toISOString(); // Add timestamp for UI
       
@@ -62,39 +63,45 @@ function App() {
       
       {/* Main content area with flexible layout */}
       <div className="flex flex-col flex-1 overflow-hidden">
-        {/* Chat container - scrollable area */}
-        <div 
-          className="flex-1 w-full overflow-hidden" 
-          style={{ height: 'calc(100vh - 140px)' }}
-        >
-          <div
-            className="h-full overflow-y-auto scroll-smooth pb-4 px-4"
-            ref={chatContainerRef}
-            style={{ overflowY: 'auto', overscrollBehavior: 'contain' }}
-          >
-            {messages.length === 0 ? (
-              <div className="flex items-center justify-center h-full">
-                <div className="text-center max-w-xl">
-                  <h2 className="text-3xl font-semibold mb-6">What's on the agenda today?</h2>
-                  <div className="border-t border-gray-100 my-6"></div>
-                </div>
+        {messages.length === 0 ? (
+          // Initial centered view with welcome message and input
+          <div className="flex flex-col items-center justify-center h-full">
+            <div className="text-center max-w-xl mb-6">
+              <h2 className="text-3xl mb-10">What's on the agenda today?</h2>
+            </div>
+            <div className="w-full max-w-[850px]">
+              <ChatInput onSendMessage={handleSendMessage} disabled={loading} />
+            </div>
+          </div>
+        ) : (
+          // Chat view after messages are present
+          <>
+            {/* Chat container - scrollable area */}
+            <div 
+              className="flex-1 w-full overflow-hidden" 
+              style={{ height: 'calc(100vh - 140px)' }}
+            >
+              <div
+                className="h-full overflow-y-auto scroll-smooth pb-4 px-4"
+                ref={chatContainerRef}
+                style={{ overflowY: 'auto', overscrollBehavior: 'contain' }}
+              >
+                <ChatHistory 
+                  messages={messages} 
+                  loading={loading} 
+                  messagesEndRef={messagesEndRef} 
+                />
               </div>
-            ) : (
-              <ChatHistory 
-                messages={messages} 
-                loading={loading} 
-                messagesEndRef={messagesEndRef} 
-              />
-            )}
-          </div>
-        </div>
-        
-        {/* Input area fixed at bottom */}
-        <div className="p-4 bg-white flex justify-center border-t border-gray-100">
-          <div className="w-full max-w-[600px]">
-            <ChatInput onSendMessage={handleSendMessage} disabled={loading} />
-          </div>
-        </div>
+            </div>
+            
+            {/* Input area fixed at bottom when messages exist */}
+            <div className="p-4 bg-white flex justify-center">
+              <div className="w-full max-w-[850px]">
+                <ChatInput onSendMessage={handleSendMessage} disabled={loading} />
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

@@ -14,8 +14,8 @@ const ChatHistory = ({ messages, loading, messagesEndRef }) => {
   }, [messages]);
 
   return (
-    <div className="w-full max-w-[600px] mx-auto" ref={historyRef}>
-      <div className="space-y-6">
+    <div className="w-full max-w-[850px] mx-auto px-4" ref={historyRef}>
+      <div className="py-4">
         {messages.map((message, index) => (
           <MessageBubble key={index} message={message} />
         ))}

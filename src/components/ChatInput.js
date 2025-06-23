@@ -172,7 +172,7 @@ const ChatInput = ({ onSendMessage, disabled }) => {
   return (
     <div className="pt-2 px-4 pb-4 bg-white">
       <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
-        <div className="relative rounded-2xl border bg-white border-gray-200 shadow-sm overflow-hidden">
+        <div className="relative rounded-3xl border bg-white border-gray-200 shadow-sm overflow-hidden">
           {/* Input area that replaces 'Ask anything' with user text */}
           <div className="px-4 pt-4 pb-3 cursor-text" onClick={handlePlaceholderClick}>
             {message || isInputActive ? (
