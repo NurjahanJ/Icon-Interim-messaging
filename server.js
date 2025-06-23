@@ -10,6 +10,9 @@ if (result.error) {
   console.error('Error loading .env file:', result.error);
 }
 
+// Set NODE_ENV to production by default
+process.env.NODE_ENV = process.env.NODE_ENV || 'production';
+
 console.log('Environment loaded, checking for API key...');
 console.log('API Key exists:', !!process.env.OPENAI_API_KEY);
 // Don't log the full key for security, just the first few chars to verify format
@@ -79,17 +82,27 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
-// Serve static files from the React build directory
-app.use(express.static(path.join(__dirname, 'build')));
+// In development, proxy requests to React dev server
+if (process.env.NODE_ENV === 'development') {
+  const { createProxyMiddleware } = require('http-proxy-middleware');
+  app.use('/', createProxyMiddleware({ 
+    target: 'http://localhost:3000',
+    changeOrigin: true,
+    ws: true, // Support WebSocket
+  }));
+} else {
+  // In production, serve static files from the React build directory
+  app.use(express.static(path.join(__dirname, 'build')));
 
-// Handle React routing, return all requests to React app except for API routes
-app.get('*', function(req, res, next) {
-  // Skip API routes
-  if (req.path.startsWith('/api/')) {
-    return next();
-  }
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
+  // Handle React routing, return all requests to React app except for API routes
+  app.get('*', function(req, res, next) {
+    // Skip API routes
+    if (req.path.startsWith('/api/')) {
+      return next();
+    }
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+  });
+}
 
 console.log('Serving both API and React frontend on the same port');
 

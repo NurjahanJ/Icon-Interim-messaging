@@ -2,6 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom scrolling styles */
+#chat-history-container {
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  height: calc(100vh - 140px);
+}
+
+#chat-history-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+#chat-history-container::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+#chat-history-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 /* Custom colors */
 :root {
   --chatgpt-gray: #FFFFFF;

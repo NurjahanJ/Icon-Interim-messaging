@@ -9,6 +9,7 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
+  const chatContainerRef = useRef(null);
   const { incrementCount } = usePromptCount();
 
   // Scroll to bottom whenever messages change
@@ -17,7 +18,11 @@ function App() {
   }, [messages]);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    } else if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
   };
 
   // Function to handle sending a new message
@@ -72,21 +77,49 @@ function App() {
   return (
     <div className="flex flex-col h-screen bg-white">
       <Header />
-      <main className="flex-1 overflow-hidden flex flex-col max-w-5xl mx-auto w-full" style={{ height: 'calc(100vh - 60px)' }}>
-        {messages.length === 0 && (
-          <div className="flex flex-col flex-grow justify-center items-center mb-24">
+      
+      {messages.length === 0 ? (
+        // Initial empty state with both text and input centered
+        <main className="flex-1 flex flex-col max-w-5xl mx-auto w-full justify-center items-center h-[calc(100vh-60px)]">
+          <div className="flex flex-col items-center justify-center gap-8">
             <h2 className="text-[28px] font-normal text-gray-700">Where should we begin?</h2>
+            <div className="w-full max-w-[600px]">
+              <ChatInput onSendMessage={handleSendMessage} disabled={loading} />
+            </div>
           </div>
-        )}
-        <div className="flex flex-col flex-1 overflow-hidden">
-          <ChatHistory 
-            messages={messages} 
-            loading={loading} 
-            messagesEndRef={messagesEndRef} 
-          />
-        </div>
-        <ChatInput onSendMessage={handleSendMessage} disabled={loading} />
-      </main>
+        </main>
+      ) : (
+        // Chat view with messages
+        <main className="flex flex-col max-w-5xl mx-auto w-full h-[calc(100vh-60px)]">
+          {/* Scrollable container for messages - absolute positioning to ensure it takes full height */}
+          <div 
+            className="relative flex-1 w-full" 
+            style={{ height: 'calc(100vh - 130px)' }}
+          >
+            <div
+              className="absolute inset-0 overflow-y-auto scroll-smooth pb-4"
+              style={{ 
+                scrollBehavior: 'smooth',
+                WebkitOverflowScrolling: 'touch'
+              }}
+              ref={chatContainerRef}
+              id="chat-history-container"
+            >
+              <ChatHistory 
+                messages={messages} 
+                loading={loading} 
+                messagesEndRef={messagesEndRef} 
+              />
+            </div>
+          </div>
+          {/* Fixed input at bottom */}
+          <div className="p-4 mt-auto bg-white flex justify-center">
+            <div className="w-full max-w-[600px]">
+              <ChatInput onSendMessage={handleSendMessage} disabled={loading} />
+            </div>
+          </div>
+        </main>
+      )}
     </div>
   );
 }
