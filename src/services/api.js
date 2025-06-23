@@ -11,11 +11,13 @@ const API_URL = '/api/chat';
 /**
  * Send a message to the OpenAI API
  * @param {string} message - The user's message to send to the API
+ * @param {string} modelId - The ID of the selected model
  * @returns {Promise<string>} - A promise that resolves to the API response text
  */
-export const sendMessage = async (message) => {
+export const sendMessage = async (message, modelId = 'gpt-4o') => {
   try {
-    const response = await axios.post(API_URL, { message });
+    console.log(`Sending message with model: ${modelId}`);
+    const response = await axios.post(API_URL, { message, modelId });
     return response.data.message;
   } catch (error) {
     console.error('Error sending message to API:', error);

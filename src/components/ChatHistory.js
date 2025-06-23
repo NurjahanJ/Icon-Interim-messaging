@@ -1,26 +1,26 @@
-import React from 'react';
-import { useTheme } from '../contexts/ThemeContext';
+import React, { useEffect } from 'react';
 import MessageBubble from './MessageBubble';
 import LoadingIndicator from './LoadingIndicator';
 
 const ChatHistory = ({ messages, loading, messagesEndRef }) => {
-  const { darkMode } = useTheme();
-  
+  // Add effect to ensure scrolling works when messages change
+  useEffect(() => {
+    // Ensure scroll container is properly set up
+    const scrollContainer = document.getElementById('chat-history-container');
+    if (scrollContainer) {
+      scrollContainer.style.overflowY = 'auto';
+    }
+  }, [messages]);
+
   return (
-    <div className={`${messages.length > 0 ? 'flex-1' : ''} overflow-y-auto p-4 ${darkMode ? 'bg-gray-900' : 'bg-chatgpt-gray'}`} style={!darkMode ? {backgroundColor: '#FFFFFF'} : {}}>
-      {messages.length === 0 ? (
-        <div className={`flex flex-col items-center justify-center ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-          {/* Empty state with no icon or text */}
-        </div>
-      ) : (
-        <div className="space-y-6">
-          {messages.map((message) => (
-            <MessageBubble key={message.id} message={message} />
-          ))}
-          {loading && <LoadingIndicator />}
-          <div ref={messagesEndRef} />
-        </div>
-      )}
+    <div className="p-4 w-full">
+      <div className="space-y-6">
+        {messages.map((message) => (
+          <MessageBubble key={message.id} message={message} />
+        ))}
+        {loading && <LoadingIndicator />}
+        <div ref={messagesEndRef} />
+      </div>
     </div>
   );
 };
