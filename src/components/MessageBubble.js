@@ -14,13 +14,13 @@ const MessageBubble = ({ message }) => {
   };
 
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
-      <div className={`max-w-[80%] rounded-lg p-3 ${
+    <div className={`flex w-full mb-4 ${isUser ? 'justify-end' : 'justify-start'}`}>
+      <div className={`max-w-[80%] rounded-2xl p-4 ${
         isUser
           ? 'bg-blue-500 text-white'
           : 'bg-gray-200 text-gray-800'
       }`}>
-        <div className="whitespace-pre-wrap">{message.text}</div>
+        <div className="whitespace-pre-wrap break-words">{message.text}</div>
         <div className={`text-xs mt-1 text-right ${
           isUser
             ? 'text-blue-200'

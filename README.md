@@ -1,6 +1,6 @@
 # ChatGPT Interface with Dark Mode
 
-A modern, responsive ChatGPT interface built with React and Tailwind CSS featuring dark mode support.
+A modern, responsive ChatGPT interface built with React and Tailwind CSS featuring dark mode support and serverless deployment capabilities.
 
 ## Features
 
@@ -56,5 +56,29 @@ yarn dev
 - Tailwind CSS
 - Context API for state management
 - OpenAI API for chat functionality
-- Express server for API proxy
+- Serverless functions for API endpoints
 - Environment variables for secure API key storage
+
+## Deploying to Vercel
+
+This project is configured for seamless deployment on Vercel with serverless functions.
+
+1. **Fork or clone this repository to your GitHub account**
+
+2. **Connect your GitHub repository to Vercel**:
+   - Sign up or log in to [Vercel](https://vercel.com)
+   - Click "New Project" and import your GitHub repository
+   - Select the repository and configure as needed
+
+3. **Configure environment variables**:
+   - Add your `OPENAI_API_KEY` in the Vercel project settings
+   - Go to Settings > Environment Variables
+   - Add the key and value, and select all environments (Production, Preview, Development)
+
+4. **Deploy**:
+   - Click "Deploy" and wait for the build to complete
+   - Your application will be available at the URL provided by Vercel
+
+5. **Verify your deployment**:
+   - Check that the UI layout works as expected (centered initially, moves to bottom after sending a message)
+   - Test the chat functionality to ensure API calls are working

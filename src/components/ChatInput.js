@@ -174,7 +174,7 @@ const ChatInput = ({ onSendMessage, disabled }) => {
       <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
         <div className="relative rounded-2xl border bg-white border-gray-200 shadow-sm overflow-hidden">
           {/* Input area that replaces 'Ask anything' with user text */}
-          <div className="px-4 pt-3 pb-2 cursor-text" onClick={handlePlaceholderClick}>
+          <div className="px-4 pt-4 pb-3 cursor-text" onClick={handlePlaceholderClick}>
             {message || isInputActive ? (
               <textarea
                 ref={textareaRef}
@@ -187,18 +187,18 @@ const ChatInput = ({ onSendMessage, disabled }) => {
                 disabled={disabled || hasReachedLimit}
                 className="w-full resize-none bg-transparent border-0 focus:ring-0 focus:outline-none text-gray-900 p-0 m-0"
                 rows="1"
-                style={{ minHeight: '24px' }}
+                style={{ minHeight: '28px' }}
                 autoFocus
               />
             ) : (
-              <div className="text-sm text-gray-500">
+              <div className="text-sm text-gray-500 py-1">
                 {hasReachedLimit ? "You've reached your daily limit of prompts" : "Ask anything"}
               </div>
             )}
           </div>
           
           {/* Bottom row with buttons */}
-          <div className="flex items-center px-2 py-2">
+          <div className="flex items-center px-2 py-3">
             {/* File Upload Button */}
             <div className="relative">
               <button
