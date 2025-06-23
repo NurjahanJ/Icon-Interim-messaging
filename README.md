@@ -1,5 +1,4 @@
-# ChatGPT Interface with Dark Mode
-
+# ChatGPT Interface 
 A modern, responsive ChatGPT interface built with React and Tailwind CSS featuring dark mode support and serverless deployment capabilities.
 
 ## Features
