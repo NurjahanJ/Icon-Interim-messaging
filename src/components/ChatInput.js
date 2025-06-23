@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { usePromptCount } from '../contexts/PromptCountContext';
+import { useModel } from '../contexts/ModelContext';
 
 const ChatInput = ({ onSendMessage, disabled }) => {
   const [message, setMessage] = useState('');
@@ -16,6 +17,7 @@ const ChatInput = ({ onSendMessage, disabled }) => {
   const toolsMenuRef = useRef(null);
   const toolsButtonRef = useRef(null);
   const { hasReachedLimit } = usePromptCount();
+  const { selectedModel } = useModel();
   
   // Auto-resize textarea as content grows
   useEffect(() => {
@@ -69,7 +71,8 @@ const ChatInput = ({ onSendMessage, disabled }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (message.trim() && !disabled && !hasReachedLimit) {
-      onSendMessage(message);
+      // Pass both the message and the selected model ID
+      onSendMessage(message, selectedModel.id);
       setMessage('');
     }
   };

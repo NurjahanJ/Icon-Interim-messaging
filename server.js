@@ -18,8 +18,8 @@ if (process.env.OPENAI_API_KEY) {
 }
 
 const app = express();
-// Use port 3000 for both frontend and backend
-const port = process.env.PORT || 3000;
+// Use port 3001 to match the proxy setting in package.json
+const port = process.env.PORT || 3001;
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -27,11 +27,15 @@ app.use(express.json());
 // API endpoint to proxy requests to OpenAI
 app.post('/api/chat', async (req, res) => {
   try {
-    const { message } = req.body;
+    const { message, modelId } = req.body;
     
     if (!message) {
       return res.status(400).json({ error: 'Message is required' });
     }
+    
+    // Use the provided model ID or default to gpt-3.5-turbo
+    const model = modelId || 'gpt-3.5-turbo';
+    console.log(`Using model: ${model} for request`);
     
     const apiKey = process.env.OPENAI_API_KEY;
     console.log('API request received, API key exists:', !!apiKey);
@@ -45,7 +49,7 @@ app.post('/api/chat', async (req, res) => {
     const response = await axios.post(
       'https://api.openai.com/v1/chat/completions',
       {
-        model: 'gpt-3.5-turbo',
+        model,
         messages: [
           { role: 'system', content: 'You are a helpful assistant.' },
           { role: 'user', content: message }

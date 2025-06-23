@@ -21,7 +21,7 @@ function App() {
   };
 
   // Function to handle sending a new message
-  const handleSendMessage = async (message) => {
+  const handleSendMessage = async (message, modelId = 'gpt-4o') => {
     if (!message.trim()) return;
     
     // Add user message to chat
@@ -30,6 +30,7 @@ function App() {
       text: message,
       sender: 'user',
       timestamp: new Date().toISOString(),
+      model: modelId // Store which model was used
     };
     
     setMessages(prevMessages => [...prevMessages, userMessage]);
@@ -39,14 +40,16 @@ function App() {
     incrementCount();
     
     try {
-      // Call the actual OpenAI API
-      const response = await sendApiMessage(message);
+      // Call the actual OpenAI API with the selected model
+      console.log(`Sending message to API with model: ${modelId}`);
+      const response = await sendApiMessage(message, modelId);
       
       const assistantMessage = {
         id: Date.now() + 1,
         text: response,
         sender: 'assistant',
         timestamp: new Date().toISOString(),
+        model: modelId // Store which model was used
       };
       
       setMessages(prevMessages => [...prevMessages, assistantMessage]);
@@ -69,13 +72,13 @@ function App() {
   return (
     <div className="flex flex-col h-screen bg-white">
       <Header />
-      <main className={`flex-1 overflow-hidden flex flex-col max-w-5xl mx-auto w-full ${messages.length === 0 ? 'justify-center' : ''}`}>
+      <main className="flex-1 overflow-hidden flex flex-col max-w-5xl mx-auto w-full" style={{ height: 'calc(100vh - 60px)' }}>
         {messages.length === 0 && (
-          <div className="text-center mb-2">
-            <h2 className="text-[28px] font-normal mb-1 text-gray-700">Where should we begin?</h2>
+          <div className="flex flex-col flex-grow justify-center items-center mb-24">
+            <h2 className="text-[28px] font-normal text-gray-700">Where should we begin?</h2>
           </div>
         )}
-        <div className={`flex flex-col ${messages.length === 0 ? '' : 'flex-1'}`}>
+        <div className="flex flex-col flex-1 overflow-hidden">
           <ChatHistory 
             messages={messages} 
             loading={loading} 
