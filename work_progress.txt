@@ -64,8 +64,8 @@
 
 ### Next Steps
 - Implement actual file upload handling on the backend
+- Add sidebar
 - Add visual feedback when files are selected
 - Enhance error handling for speech recognition and file uploads
-- Add functionality to the Tools menu options
 - Consider adding message reactions or feedback options
 - Implement message markdown rendering for code blocks and formatting
