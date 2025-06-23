@@ -1,7 +1,7 @@
 import React from 'react';
 
 const MessageBubble = ({ message }) => {
-  const isUser = message.sender === 'user';
+  const isUser = message.role === 'user';
   
   // Format timestamp to a readable format
   const formatTime = (timestamp) => {
@@ -20,7 +20,7 @@ const MessageBubble = ({ message }) => {
           ? 'bg-blue-500 text-white'
           : 'bg-gray-200 text-gray-800'
       }`}>
-        <div className="whitespace-pre-wrap break-words">{message.text}</div>
+        <div className="whitespace-pre-wrap break-words">{message.content}</div>
         <div className={`text-xs mt-1 text-right ${
           isUser
             ? 'text-blue-200'
