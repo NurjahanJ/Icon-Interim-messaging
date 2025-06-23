@@ -1,25 +1,26 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import MessageBubble from './MessageBubble';
 import LoadingIndicator from './LoadingIndicator';
 
 const ChatHistory = ({ messages, loading, messagesEndRef }) => {
+  const historyRef = useRef(null);
+
   // Add effect to ensure scrolling works when messages change
   useEffect(() => {
     // Ensure scroll container is properly set up
-    const scrollContainer = document.getElementById('chat-history-container');
-    if (scrollContainer) {
-      scrollContainer.style.overflowY = 'auto';
+    if (historyRef.current?.parentElement) {
+      historyRef.current.parentElement.style.overflowY = 'auto';
     }
   }, [messages]);
 
   return (
-    <div className="p-4 w-full">
-      <div className="space-y-6">
-        {messages.map((message) => (
-          <MessageBubble key={message.id} message={message} />
+    <div className="w-full max-w-[850px] mx-auto px-4" ref={historyRef}>
+      <div className="py-4">
+        {messages.map((message, index) => (
+          <MessageBubble key={index} message={message} />
         ))}
         {loading && <LoadingIndicator />}
-        <div ref={messagesEndRef} />
+        <div ref={messagesEndRef} className="h-4" /> {/* Added height to ensure proper scrolling */}
       </div>
     </div>
   );

@@ -1,18 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Header from './components/Header';
+import { sendConversation, createUserMessage, createAssistantMessage } from './services/api';
 import ChatHistory from './components/ChatHistory';
 import ChatInput from './components/ChatInput';
-import { usePromptCount } from './contexts/PromptCountContext';
-import { sendMessage as sendApiMessage } from './services/api';
+import Header from './components/Header';
 
 function App() {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
-  const { incrementCount } = usePromptCount();
 
-  // Scroll to bottom whenever messages change
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -20,106 +17,92 @@ function App() {
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    } else if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
   };
 
-  // Function to handle sending a new message
   const handleSendMessage = async (message, modelId = 'gpt-4o') => {
     if (!message.trim()) return;
     
-    // Add user message to chat
-    const userMessage = {
-      id: Date.now(),
-      text: message,
-      sender: 'user',
-      timestamp: new Date().toISOString(),
-      model: modelId // Store which model was used
-    };
+    // Create a new user message
+    const userMessage = createUserMessage(message);
+    userMessage.timestamp = new Date().toISOString(); // Add timestamp for UI
     
-    setMessages(prevMessages => [...prevMessages, userMessage]);
+    // Add user message to state
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
     setLoading(true);
     
-    // Increment the prompt count
-    incrementCount();
-    
     try {
-      // Call the actual OpenAI API with the selected model
-      console.log(`Sending message to API with model: ${modelId}`);
-      const response = await sendApiMessage(message, modelId);
+      // Prepare messages for API (might need to include previous messages for context)
+      const messagesToSend = messages.length > 0 ? 
+        [...messages, userMessage] : 
+        [{ role: 'system', content: 'You are a helpful assistant.' }, userMessage];
       
-      const assistantMessage = {
-        id: Date.now() + 1,
-        text: response,
-        sender: 'assistant',
-        timestamp: new Date().toISOString(),
-        model: modelId // Store which model was used
-      };
+      // Send conversation to API
+      const response = await sendConversation(messagesToSend, modelId);
       
-      setMessages(prevMessages => [...prevMessages, assistantMessage]);
+      // Create assistant message
+      // The OpenAI API returns response in format: { choices: [{ message: { content: '...' } }] }
+      const assistantContent = response.choices?.[0]?.message?.content || 'I apologize, but I couldn\'t generate a response.';
+      const assistantMessage = createAssistantMessage(assistantContent);
+      assistantMessage.timestamp = new Date().toISOString(); // Add timestamp for UI
       
-    } catch (error) {
-      // Handle API errors
-      const errorMessage = {
-        id: Date.now() + 1,
-        text: `Error: ${error.message || 'Something went wrong. Please try again.'}`,
-        sender: 'assistant',
-        timestamp: new Date().toISOString(),
-      };
-      
-      setMessages(prevMessages => [...prevMessages, errorMessage]);
+      // Add assistant message to state
+      setMessages([...updatedMessages, assistantMessage]);
+    } catch (err) {
+      console.error('Error sending message:', err);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col h-screen bg-white">
+    <div className="flex flex-col h-screen bg-white text-gray-900">
+      {/* Header */}
       <Header />
       
-      {messages.length === 0 ? (
-        // Initial empty state with both text and input centered
-        <main className="flex-1 flex flex-col max-w-5xl mx-auto w-full justify-center items-center h-[calc(100vh-60px)]">
-          <div className="flex flex-col items-center justify-center gap-8">
-            <h2 className="text-[28px] font-normal text-gray-700">Where should we begin?</h2>
-            <div className="w-full max-w-[600px]">
+      {/* Main content area with flexible layout */}
+      <div className="flex flex-col flex-1 overflow-hidden">
+        {messages.length === 0 ? (
+          // Initial centered view with welcome message and input
+          <div className="flex flex-col items-center justify-center h-full">
+            <div className="text-center max-w-xl mb-6">
+              <h2 className="text-3xl mb-10">What's on the agenda today?</h2>
+            </div>
+            <div className="w-full max-w-[850px]">
               <ChatInput onSendMessage={handleSendMessage} disabled={loading} />
             </div>
           </div>
-        </main>
-      ) : (
-        // Chat view with messages
-        <main className="flex flex-col max-w-5xl mx-auto w-full h-[calc(100vh-60px)]">
-          {/* Scrollable container for messages - absolute positioning to ensure it takes full height */}
-          <div 
-            className="relative flex-1 w-full" 
-            style={{ height: 'calc(100vh - 130px)' }}
-          >
-            <div
-              className="absolute inset-0 overflow-y-auto scroll-smooth pb-4"
-              style={{ 
-                scrollBehavior: 'smooth',
-                WebkitOverflowScrolling: 'touch'
-              }}
-              ref={chatContainerRef}
-              id="chat-history-container"
+        ) : (
+          // Chat view after messages are present
+          <>
+            {/* Chat container - scrollable area */}
+            <div 
+              className="flex-1 w-full overflow-hidden" 
+              style={{ height: 'calc(100vh - 140px)' }}
             >
-              <ChatHistory 
-                messages={messages} 
-                loading={loading} 
-                messagesEndRef={messagesEndRef} 
-              />
+              <div
+                className="h-full overflow-y-auto scroll-smooth pb-4 px-4"
+                ref={chatContainerRef}
+                style={{ overflowY: 'auto', overscrollBehavior: 'contain' }}
+              >
+                <ChatHistory 
+                  messages={messages} 
+                  loading={loading} 
+                  messagesEndRef={messagesEndRef} 
+                />
+              </div>
             </div>
-          </div>
-          {/* Fixed input at bottom */}
-          <div className="p-4 mt-auto bg-white flex justify-center">
-            <div className="w-full max-w-[600px]">
-              <ChatInput onSendMessage={handleSendMessage} disabled={loading} />
+            
+            {/* Input area fixed at bottom when messages exist */}
+            <div className="p-4 bg-white flex justify-center">
+              <div className="w-full max-w-[850px]">
+                <ChatInput onSendMessage={handleSendMessage} disabled={loading} />
+              </div>
             </div>
-          </div>
-        </main>
-      )}
+          </>
+        )}
+      </div>
     </div>
   );
 }

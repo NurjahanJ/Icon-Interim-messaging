@@ -1,24 +1,24 @@
-const express = require('express');
+// Serverless function for OpenAI chat API
 const axios = require('axios');
-const path = require('path');
-const fs = require('fs');
-const cors = require('cors');
 
-// Load environment variables from .env file
-require('dotenv').config();
+// This function will be executed when the endpoint is called
+module.exports = async (req, res) => {
+  // Set CORS headers
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
 
-// Set NODE_ENV to production by default if not set
-process.env.NODE_ENV = process.env.NODE_ENV || 'production';
+  // Handle OPTIONS request for CORS preflight
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
 
-const app = express();
-const port = process.env.PORT || 3000;
+  // Only allow POST requests
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
 
-// Middleware
-app.use(express.json());
-app.use(cors());
-
-// API endpoint to proxy requests to OpenAI
-app.post('/api/chat', async (req, res) => {
   try {
     const { messages, modelId } = req.body;
     
@@ -60,24 +60,4 @@ app.post('/api/chat', async (req, res) => {
       error: error.response?.data?.error?.message || 'Failed to get a response from OpenAI' 
     });
   }
-});
-
-// Serve static files in production
-if (fs.existsSync(path.join(__dirname, 'build'))) {
-  app.use(express.static(path.join(__dirname, 'build')));
-  
-  // For all other routes, serve the React app
-  app.get('*', (req, res) => {
-    // Skip API routes
-    if (req.path.startsWith('/api/')) {
-      return res.status(404).json({ error: 'API endpoint not found' });
-    }
-    
-    res.sendFile(path.join(__dirname, 'build', 'index.html'));
-  });
-}
-
-app.listen(port, () => {
-  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${port}`);
-  console.log(`Access the app at http://localhost:${port}`);
-});
+};
