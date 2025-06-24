@@ -70,36 +70,34 @@ function App() {
   return (
     <div className="flex h-screen bg-white text-gray-900">
       {/* Sidebar */}
-      <div className="flex flex-col bg-[#202123] text-white" style={{ width: '260px', minWidth: '260px', borderRight: '1px solid #4d4d4f' }}>
+      <div className="flex flex-col bg-[#f7f7f8] text-gray-800" style={{ width: '260px', minWidth: '260px', borderRight: '1px solid #e5e5e5' }}>
         {/* Logo button */}
-        <div className="p-3 border-b border-gray-700">
-          <button 
-            onClick={() => {
-              setMessages([]);
-              setCurrentConversationId('1');
-            }}
-            className="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-gray-700 w-full"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            <span className="font-semibold">ChatGPT</span>
-          </button>
-        </div>
-        
-        {/* New chat button */}
         <div className="p-3">
           <button 
             onClick={() => {
               setMessages([]);
               setCurrentConversationId('1');
             }}
-            className="w-full flex items-center gap-3 rounded-md border border-white/20 px-3 py-2 text-sm hover:bg-gray-700"
+            className="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-gray-200 w-full"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            <img src="/images/logo.png" alt="Logo" width="24" height="24" />
+          </button>
+        </div>
+        
+        {/* New chat button */}
+        <div className="p-3 pb-1">
+          <button 
+            onClick={() => {
+              setMessages([]);
+              setCurrentConversationId('1');
+            }}
+            className="w-full flex items-center gap-3 rounded-md border border-gray-300 px-3 py-2 text-sm hover:bg-gray-200"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M11 4H4V11H11V4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M20 4H13V11H20V4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M20 13H13V20H20V13Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M11 13H4V20H11V13Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
             New chat
           </button>
@@ -107,35 +105,41 @@ function App() {
         
         {/* Navigation items */}
         <div className="px-3 py-2">
-          <div className="flex flex-col space-y-1">
-            <button className="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-gray-700">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+          <div className="flex flex-col space-y-2">
+            <button className="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-gray-200">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
               Search chats
             </button>
-            <button className="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-gray-700">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2" />
-              </svg>
+            <button className="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-gray-200">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M19 16V5C19 3.89543 18.1046 3 17 3H7C5.89543 3 5 3.89543 5 5V19C5 20.1046 5.89543 21 7 21H13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M9 7H15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M9 11H15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M9 15H13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
               Library
             </button>
-            <button className="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-gray-700">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-              </svg>
+            <button className="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-gray-200">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+              <path d="M12 8V12L15 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
               Codex
             </button>
-            <button className="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-gray-700">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-              </svg>
+            <button className="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-gray-200">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+              <path d="M16 12L10 16V8L16 12Z" fill="currentColor"/>
+            </svg>
               Sora
             </button>
-            <button className="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-gray-700">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-              </svg>
+            <button className="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-gray-200">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17 8C17 10.7614 14.7614 13 12 13C9.23858 13 7 10.7614 7 8C7 5.23858 9.23858 3 12 3C14.7614 3 17 5.23858 17 8Z" stroke="currentColor" strokeWidth="2"/>
+              <path d="M3 21C3 21 6 17 12 17C18 17 21 21 21 21" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
               GPTs
             </button>
           </div>
@@ -143,20 +147,32 @@ function App() {
         
         {/* Chat history section */}
         <div className="flex-1 overflow-y-auto px-3 py-2">
-          <h3 className="text-xs text-gray-500 font-medium mb-2 px-3">Chat History</h3>
+          <h3 className="text-xs text-gray-500 font-medium mb-2 px-3">Chats</h3>
           <div className="space-y-1">
-            {/* Chat history will be populated here */}
+            <button className="w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-gray-200">
+              New chat
+            </button>
+            <button className="w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-gray-200">
+              Capitalization vs Expense
+            </button>
+            <button className="w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-gray-200">
+              Duplicate publication disclosure
+            </button>
+            <button className="w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-gray-200">
+              UI Layout
+            </button>
           </div>
         </div>
         
         {/* View plans section */}
-        <div className="border-t border-gray-700 p-3">
-          <button className="w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-gray-700">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+        <div className="border-t border-gray-200 p-3">
+          <button className="w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-gray-200">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L4 5V11.09C4 16.14 7.41 20.85 12 22C16.59 20.85 20 16.14 20 11.09V5L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
             View plans
           </button>
+          <div className="text-xs text-gray-500">Unlimited access, team features, and more</div>
         </div>
       </div>
       

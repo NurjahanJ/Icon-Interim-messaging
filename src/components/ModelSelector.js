@@ -31,8 +31,7 @@ const ModelSelector = () => {
       >
         <div className="flex items-center px-3 py-1.5">
           <h1 className="text-base">
-            <span className="text-gray-800 font-bold">ChatGPT</span>
-            <span className="text-gray-500 ml-1 font-medium">{selectedModel.id === 'gpt-4o' ? '4o' : selectedModel.name}</span>
+            <span className="text-gray-500 font-medium">{selectedModel.id === 'gpt-4o' ? '4o' : selectedModel.name}</span>
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
               className={`h-4 w-4 ml-1 inline-block text-gray-500 transition-transform duration-200 ${isModelMenuOpen ? 'transform rotate-180' : ''}`} 
