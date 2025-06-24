@@ -3,20 +3,18 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { ThemeProvider } from './contexts/ThemeContext';
+// ThemeProvider removed as it's not being used in components
 import { PromptCountProvider } from './contexts/PromptCountContext';
 import { ModelProvider } from './contexts/ModelContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <ThemeProvider>
-      <PromptCountProvider>
-        <ModelProvider>
-          <App />
-        </ModelProvider>
-      </PromptCountProvider>
-    </ThemeProvider>
+    <PromptCountProvider>
+      <ModelProvider>
+        <App />
+      </ModelProvider>
+    </PromptCountProvider>
   </React.StrictMode>
 );
 
