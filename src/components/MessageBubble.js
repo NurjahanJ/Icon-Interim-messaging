@@ -1,9 +1,11 @@
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeHighlight from 'rehype-highlight';
 
 const MessageBubble = ({ message }) => {
   const isUser = message.role === 'user';
-  
-  // Format timestamp to a readable format
+
   const formatTime = (timestamp) => {
     try {
       const date = new Date(timestamp);
@@ -14,17 +16,45 @@ const MessageBubble = ({ message }) => {
   };
 
   return (
-    <div className={`flex w-full my-6 ${isUser ? 'justify-end' : 'justify-start'}`}>
-      <div className={`max-w-[80%] rounded-2xl p-4 ${
-        isUser
-          ? 'bg-blue-600 text-white'
-          : 'bg-gray-100 text-gray-800'
-      }`}>
-        <div className="whitespace-pre-wrap break-words">{message.content}</div>
-        <div className={`text-xs mt-1 text-right ${
-          isUser
-            ? 'text-blue-200'
-            : 'text-gray-500'
+    <div className={`flex w-full my-4 ${isUser ? 'justify-end' : 'justify-start'}`}>
+      <div
+        className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm
+        ${isUser
+          ? 'bg-gray-100 text-gray-800'
+          : 'bg-white text-gray-900'
+        }
+        dark:${isUser
+          ? 'bg-gray-700 text-gray-200'
+          : 'bg-[#1E1E1E] text-gray-100'
+        }`}
+      >
+        {/* Message Content or Typing Animation */}
+        {message.isLoading ? (
+          <div className="flex space-x-1 mt-1">
+            <span className="h-2 w-2 rounded-full bg-gray-400 dark:bg-gray-500 animate-bounce" style={{ animationDelay: '0s' }}></span>
+            <span className="h-2 w-2 rounded-full bg-gray-400 dark:bg-gray-500 animate-bounce" style={{ animationDelay: '0.15s' }}></span>
+            <span className="h-2 w-2 rounded-full bg-gray-400 dark:bg-gray-500 animate-bounce" style={{ animationDelay: '0.3s' }}></span>
+          </div>
+        ) : (
+          <ReactMarkdown
+            className="prose prose-sm dark:prose-invert"
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeHighlight]}
+            components={{
+              h1: ({ children }) => <p className="font-bold">{children}</p>,
+              h2: ({ children }) => <p className="font-bold">{children}</p>,
+              h3: ({ children }) => <p className="font-bold">{children}</p>,
+              h4: ({ children }) => <p className="font-bold">{children}</p>,
+              h5: ({ children }) => <p className="font-bold">{children}</p>,
+              h6: ({ children }) => <p className="font-bold">{children}</p>
+            }}
+          >
+            {message.content}
+          </ReactMarkdown>
+        )}
+
+        <div className={`text-[11px] mt-2 text-right ${
+          isUser ? 'text-blue-200' : 'text-gray-400 dark:text-gray-500'
         }`}>
           {formatTime(message.timestamp)}
         </div>

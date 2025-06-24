@@ -1,48 +1,63 @@
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeHighlight from 'rehype-highlight';
+import 'highlight.js/styles/github.css'; // optional styling
 
 const ChatMessage = ({ role, content, isLoading = false }) => {
-  // Determine styling based on role
   const isUser = role === 'user';
-  
+
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
-      <div className={`flex max-w-3xl ${isUser ? 'ml-auto' : 'mr-auto'} w-full`}>
+    <div className={`flex w-full my-4 ${isUser ? 'justify-end' : 'justify-start'}`}>
+      <div className="flex max-w-3xl w-full">
         {/* Avatar */}
-        <div className="flex-shrink-0 mr-4">
+        <div className="flex-shrink-0 mr-3 mt-1">
           <div className={`h-8 w-8 rounded-full flex items-center justify-center ${
             isUser ? 'bg-blue-500' : 'bg-green-500'
           }`}>
-            {isUser ? (
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21a48.309 48.309 0 01-8.135-1.087c-1.717-.293-2.3-2.379-1.067-3.61L5 14.5" />
-              </svg>
-            )}
+            <span className="text-white text-sm font-semibold">
+              {isUser ? 'You' : 'AI'}
+            </span>
           </div>
         </div>
-        
-        {/* Message content */}
+
+        {/* Message bubble */}
         <div className="flex-1">
-          <div className={`rounded-lg px-4 py-3 ${
-            isUser ? 'bg-blue-50 text-blue-900' : 'bg-white border border-gray-200'
-          }`}>
+          <div className={`
+            px-4 py-3 rounded-xl text-sm leading-relaxed shadow-sm
+            prose dark:prose-invert max-w-none
+            ${isUser 
+              ? 'bg-blue-50 text-blue-900' 
+              : 'bg-white text-gray-900 border border-gray-200'
+            }
+            dark:${isUser 
+              ? 'bg-blue-600 text-white' 
+              : 'bg-[#1E1E1E] text-gray-100 border-gray-700'
+            }
+          `}>
             {isLoading ? (
-              <div className="flex items-center space-x-2">
-                <div className="h-2 w-2 rounded-full bg-gray-400 animate-pulse"></div>
-                <div className="h-2 w-2 rounded-full bg-gray-400 animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                <div className="h-2 w-2 rounded-full bg-gray-400 animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+              <div className="flex items-center space-x-1">
+                <span className="h-2 w-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></span>
+                <span className="h-2 w-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
+                <span className="h-2 w-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></span>
               </div>
             ) : (
-              <div className="prose prose-sm max-w-none">
-                {content.split('\n').map((paragraph, i) => (
-                  <p key={i} className={i > 0 ? 'mt-2' : ''}>
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
+              <ReactMarkdown
+  className="prose dark:prose-invert max-w-none"
+  remarkPlugins={[remarkGfm]}
+  rehypePlugins={[rehypeHighlight]}
+  components={{
+    h1: ({ children }) => <p className="font-bold">{children}</p>,
+    h2: ({ children }) => <p className="font-bold">{children}</p>,
+    h3: ({ children }) => <p className="font-bold">{children}</p>,
+    h4: ({ children }) => <p className="font-bold">{children}</p>,
+    h5: ({ children }) => <p className="font-bold">{children}</p>,
+    h6: ({ children }) => <p className="font-bold">{children}</p>
+  }}
+>
+  {content}
+</ReactMarkdown>
+
             )}
           </div>
         </div>
