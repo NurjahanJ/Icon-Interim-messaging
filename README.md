@@ -1,15 +1,14 @@
-# ChatGPT Interface 
-A modern, responsive ChatGPT interface built with React and Tailwind CSS featuring dark mode support and serverless deployment capabilities.
+# ChatGPT Interface
+A modern, responsive ChatGPT interface built with React and Tailwind CSS.
 
 ## Features
 
-- Clean, minimalist chat interface inspired by ChatGPT
-- Integration with OpenAI's API for real AI responses
-- Dark mode support with system preference detection
-- Persistent theme preference using localStorage
-- Responsive design for all device sizes
-- Animated message transitions
-- Auto-resizing text input
+- Modern UI with sidebar navigation and clean chat interface
+- Dynamic layout: centered initially, bottom-aligned after first message
+- Customized styling with rounded corners and proper spacing
+- Message styling: blue user bubbles, gray AI responses
+- Interactive components: file upload, tools dropdown menu
+- Scrollable chat history with proper spacing
 
 ## Getting Started
 
@@ -51,33 +50,14 @@ yarn dev
 
 ## Technologies Used
 
-- React.js
-- Tailwind CSS
-- Context API for state management
-- OpenAI API for chat functionality
-- Serverless functions for API endpoints
-- Environment variables for secure API key storage
+- React.js with hooks for state management
+- Tailwind CSS for styling
+- Click-outside detection for menus
 
-## Deploying to Vercel
+## Deployment
 
-This project is configured for seamless deployment on Vercel with serverless functions.
+This project can be deployed on platforms like Vercel or Netlify.
 
-1. **Fork or clone this repository to your GitHub account**
-
-2. **Connect your GitHub repository to Vercel**:
-   - Sign up or log in to [Vercel](https://vercel.com)
-   - Click "New Project" and import your GitHub repository
-   - Select the repository and configure as needed
-
-3. **Configure environment variables**:
-   - Add your `OPENAI_API_KEY` in the Vercel project settings
-   - Go to Settings > Environment Variables
-   - Add the key and value, and select all environments (Production, Preview, Development)
-
-4. **Deploy**:
-   - Click "Deploy" and wait for the build to complete
-   - Your application will be available at the URL provided by Vercel
-
-5. **Verify your deployment**:
-   - Check that the UI layout works as expected (centered initially, moves to bottom after sending a message)
-   - Test the chat functionality to ensure API calls are working
+1. Connect your repository to your preferred deployment platform
+2. Configure any required environment variables
+3. Deploy and verify the UI functions as expected
