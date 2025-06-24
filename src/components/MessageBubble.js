@@ -2,6 +2,10 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
+import 'katex/dist/katex.min.css';
+import { InlineMath, BlockMath } from 'react-katex';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 
 const MessageBubble = ({ message }) => {
   const isUser = message.role === 'user';
@@ -38,8 +42,8 @@ const MessageBubble = ({ message }) => {
         ) : (
           <ReactMarkdown
             className="prose prose-sm dark:prose-invert"
-            remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeHighlight]}
+            remarkPlugins={[remarkGfm, remarkMath]}
+            rehypePlugins={[rehypeHighlight, rehypeKatex]}
             components={{
               h1: ({ children }) => <p className="font-bold">{children}</p>,
               h2: ({ children }) => <p className="font-bold">{children}</p>,
