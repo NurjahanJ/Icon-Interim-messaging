@@ -103,14 +103,14 @@ function App() {
         
         {/* Navigation items */}
         <div className="px-2 py-1">
-          <div className="flex flex-col space-y-1">
-            <button className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-gray-200">
+          <div className="flex flex-col">
+            <button className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-gray-200 mb-1">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
               Search chats
             </button>
-            <button className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-gray-200">
+            <button className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-gray-200 mb-6">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <rect x="5" y="3" width="14" height="18" rx="2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               <path d="M9 7H15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -119,14 +119,14 @@ function App() {
             </svg>
               Library
             </button>
-            <button className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-gray-200">
+            <button className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-gray-200 mb-1">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
               <path d="M12 8V12L15 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
               Codex
             </button>
-            <button className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-gray-200">
+            <button className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-gray-200 mb-1">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
               <path d="M16 12L10 16V8L16 12Z" fill="currentColor"/>
