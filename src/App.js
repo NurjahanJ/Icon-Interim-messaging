@@ -3,6 +3,7 @@ import { sendConversation, createUserMessage, createAssistantMessage } from './s
 import ChatHistory from './components/ChatHistory';
 import ChatInput from './components/ChatInput';
 import Header from './components/Header';
+import logo from './images/logo.png';
 
 function App() {
   const [messages, setMessages] = useState([]);
@@ -11,7 +12,8 @@ function App() {
     { id: '1', title: 'New Chat' },
   ]);
   const [currentConversationId, setCurrentConversationId] = useState('1');
-
+  const [showEmptyState, setShowEmptyState] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
 
@@ -69,24 +71,44 @@ function App() {
 
   return (
     <div className="flex h-screen bg-white text-gray-900">
+      {/* Sidebar Toggle Button (visible when sidebar is closed) */}
+      {!sidebarOpen && (
+        <button 
+          onClick={() => setSidebarOpen(true)} 
+          className="fixed top-3 left-3 z-10 p-2 rounded-md hover:bg-gray-100"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="4" width="16" height="16" rx="3" stroke="#8e8ea0" strokeWidth="1.5" />
+          </svg>
+        </button>
+      )}
+      
       {/* Sidebar */}
-      <div className="flex flex-col bg-[#f7f7f8] text-gray-800" style={{ width: '260px', minWidth: '260px', borderRight: '1px solid #e5e5e5' }}>
-        {/* Logo button */}
-        <div className="p-3">
+      <div className={`flex flex-col h-full ${sidebarOpen ? 'w-[260px] min-w-[260px]' : 'w-0 min-w-0 overflow-hidden'} bg-gray-50 border-r border-gray-200 overflow-y-auto transition-all duration-300`}>
+        {/* Logo */}
+        <div className="p-3 flex justify-between items-center">
           <button 
             onClick={() => {
               setMessages([]);
               setCurrentConversationId('1');
             }}
-            className="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-gray-200 w-full"
+            className="p-2 hover:bg-gray-200 rounded-md"
           >
-            <img src="/images/logo.png" alt="Logo" width="24" height="24" />
+            <img src={logo} alt="Logo" width="24" height="24" />
+          </button>
+          <button 
+            onClick={() => setSidebarOpen(false)} 
+            className="p-2 hover:bg-gray-200 rounded-md"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="4" y="4" width="16" height="16" rx="3" stroke="#8e8ea0" strokeWidth="1.5" />
+            </svg>
           </button>
         </div>
         
         {/* New chat button */}
-        <div className="p-3 pb-1">
-          <button 
+        <div className="px-2 py-1">
+          <button
             onClick={() => {
               setMessages([]);
               setCurrentConversationId('1');
@@ -94,8 +116,8 @@ function App() {
             className="w-full flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-gray-200"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M11 4H4V20H20V13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M18.5 2.5C18.8978 2.10217 19.4374 1.87868 20 1.87868C20.5626 1.87868 21.1022 2.10217 21.5 2.5C21.8978 2.89782 22.1213 3.43739 22.1213 4C22.1213 4.56261 21.8978 5.10217 21.5 5.5L12 15L8 16L9 12L18.5 2.5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M11 4H4V20H20V13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M18.5 2.5C18.8978 2.10217 19.4374 1.87868 20 1.87868C20.5626 1.87868 21.1022 2.10217 21.5 2.5C21.8978 2.89782 22.1213 3.43739 22.1213 4C22.1213 4.56261 21.8978 5.10217 21.5 5.5L12 15L8 16L9 12L18.5 2.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
             New chat
           </button>
