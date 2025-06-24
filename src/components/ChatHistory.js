@@ -1,13 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import MessageBubble from './MessageBubble';
-import LoadingIndicator from './LoadingIndicator';
 
-const ChatHistory = ({ messages, loading, messagesEndRef }) => {
+const ChatHistory = ({ messages, messagesEndRef }) => {
   const historyRef = useRef(null);
 
-  // Add effect to ensure scrolling works when messages change
   useEffect(() => {
-    // Ensure scroll container is properly set up
     if (historyRef.current?.parentElement) {
       historyRef.current.parentElement.style.overflowY = 'auto';
     }
@@ -19,8 +16,7 @@ const ChatHistory = ({ messages, loading, messagesEndRef }) => {
         {messages.map((message, index) => (
           <MessageBubble key={index} message={message} />
         ))}
-        {loading && <LoadingIndicator />}
-        <div ref={messagesEndRef} className="h-4" /> {/* Added height to ensure proper scrolling */}
+        <div ref={messagesEndRef} className="h-4" />
       </div>
     </div>
   );
