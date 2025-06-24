@@ -3,7 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import 'katex/dist/katex.min.css';
-import { InlineMath, BlockMath } from 'react-katex';
+// InlineMath and BlockMath are imported by rehypeKatex
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 
