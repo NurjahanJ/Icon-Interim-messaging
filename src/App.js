@@ -72,9 +72,26 @@ function App() {
 
       setMessages([...messages, userMessage, assistantMessage]);
     } catch (err) {
-      console.error('Error sending message:', err);
-      const errorMessage = createAssistantMessage("Sorry, something went wrong.");
+      console.error('Error sending message:', {
+        message: err.message,
+        cause: err.cause,
+        stack: err.stack
+      });
+      
+      // Extract a more useful error message if available
+      let errorText = "Sorry, something went wrong.";
+      
+      if (err.message.includes('API key')) {
+        errorText = "Error: OpenAI API key is missing or invalid. Please check your server configuration.";
+      } else if (err.message.includes('rate limit')) {
+        errorText = "Error: OpenAI rate limit exceeded. Please try again later.";
+      } else if (err.message.includes('network') || err.message.includes('timeout')) {
+        errorText = "Error: Network issue when connecting to the API. Please check your connection.";
+      }
+      
+      const errorMessage = createAssistantMessage(errorText);
       errorMessage.timestamp = new Date().toISOString();
+      errorMessage.isError = true; // Flag to style error messages differently
       setMessages([...messages, userMessage, errorMessage]);
     } finally {
       setLoading(false);
