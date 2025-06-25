@@ -267,8 +267,8 @@ const ChatInput = ({ onSendMessage, disabled }) => {
                       }}
                     >
                       <svg className="mr-3 h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="12" r="10" stroke={isSaveEarthActive ? "#15803d" : "currentColor"} strokeWidth="1.5"/>
-                        <path d="M12 6C9 6 7 9 7 12C7 15 10 18 12 18C14 18 17 15 17 12C17 9 15 6 12 6Z" stroke={isSaveEarthActive ? "#15803d" : "currentColor"} strokeWidth="1.5"/>
+                        <path d="M4.44893 17.009C-0.246384 7.83762 7.34051 0.686125 19.5546 3.61245C20.416 3.81881 21.0081 4.60984 20.965 5.49452C20.5862 13.288 17.0341 17.7048 6.13252 17.9857C5.43022 18.0038 4.76908 17.6344 4.44893 17.009Z" stroke={isSaveEarthActive ? "#15803d" : "currentColor"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M3.99999 21C5.50005 15.5 6 12.5 12 9.99997" stroke={isSaveEarthActive ? "#15803d" : "currentColor"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                       Save the Earth
                     </button>
@@ -318,8 +318,8 @@ const ChatInput = ({ onSendMessage, disabled }) => {
                 disabled={disabled || hasReachedLimit}
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5"/>
-                  <path d="M12 6C9 6 7 9 7 12C7 15 10 18 12 18C14 18 17 15 17 12C17 9 15 6 12 6Z" stroke="currentColor" strokeWidth="1.5"/>
+                  <path d="M4.44893 17.009C-0.246384 7.83762 7.34051 0.686125 19.5546 3.61245C20.416 3.81881 21.0081 4.60984 20.965 5.49452C20.5862 13.288 17.0341 17.7048 6.13252 17.9857C5.43022 18.0038 4.76908 17.6344 4.44893 17.009Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M3.99999 21C5.50005 15.5 6 12.5 12 9.99997" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
                 <span className="ml-1 text-sm">Save</span>
               </button>
