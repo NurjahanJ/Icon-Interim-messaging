@@ -54,13 +54,26 @@ module.exports = async (req, res) => {
     
     return res.json(response.data);
   } catch (error) {
-    // Enhanced error logging
+    // Enhanced error logging (combined from both branches)
     console.error('Error calling OpenAI API:', {
       message: error.message,
       status: error.response?.status,
       data: error.response?.data,
       stack: error.stack
     });
+    
+    // Additional detailed logging from sustainability-ui branch
+    if (error.response?.data) {
+      console.error('Full error response:', JSON.stringify(error.response.data));
+    }
+    
+    if (error.config) {
+      console.error('Request URL:', error.config.url);
+      // Log request headers without the Authorization header
+      const safeHeaders = { ...error.config.headers };
+      if (safeHeaders.Authorization) safeHeaders.Authorization = '[REDACTED]';
+      console.error('Request headers:', safeHeaders);
+    }
     
     // Check for specific error types
     if (error.response?.status === 401) {
