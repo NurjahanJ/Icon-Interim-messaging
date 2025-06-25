@@ -54,10 +54,34 @@ module.exports = async (req, res) => {
     
     return res.json(response.data);
   } catch (error) {
-    console.error('Error calling OpenAI API:', error.response?.data || error.message);
-    
-    return res.status(error.response?.status || 500).json({ 
-      error: error.response?.data?.error?.message || 'Failed to get a response from OpenAI' 
+    // Enhanced error logging
+    console.error('Error calling OpenAI API:', {
+      message: error.message,
+      status: error.response?.status,
+      data: error.response?.data,
+      stack: error.stack
     });
+    
+    // Check for specific error types
+    if (error.response?.status === 401) {
+      return res.status(401).json({ 
+        error: 'Authentication error: Invalid API key or unauthorized access',
+        details: error.response?.data?.error?.message
+      });
+    } else if (error.response?.status === 429) {
+      return res.status(429).json({ 
+        error: 'Rate limit exceeded: Too many requests to OpenAI API',
+        details: error.response?.data?.error?.message
+      });
+    } else if (!process.env.OPENAI_API_KEY) {
+      return res.status(500).json({ 
+        error: 'Configuration error: OpenAI API key is not set in environment variables'
+      });
+    } else {
+      return res.status(error.response?.status || 500).json({ 
+        error: error.response?.data?.error?.message || 'Failed to get a response from OpenAI',
+        details: 'Check server logs for more information'
+      });
+    }
   }
 };
