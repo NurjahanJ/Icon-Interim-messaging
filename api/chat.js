@@ -1,6 +1,9 @@
 // Serverless function for OpenAI chat API
 const axios = require('axios');
 
+// Log to help with debugging
+console.log('Serverless function api/chat.js is being executed');
+
 // This function will be executed when the endpoint is called
 module.exports = async (req, res) => {
   // Set CORS headers
@@ -32,8 +35,11 @@ module.exports = async (req, res) => {
     const apiKey = process.env.OPENAI_API_KEY;
     
     if (!apiKey) {
+      console.error('OPENAI_API_KEY is not configured in environment variables');
       return res.status(500).json({ error: 'API key not configured' });
     }
+    
+    console.log(`Making OpenAI API request with model: ${model}`);
     
     // Call OpenAI API
     const response = await axios.post(
@@ -55,6 +61,18 @@ module.exports = async (req, res) => {
     return res.json(response.data);
   } catch (error) {
     console.error('Error calling OpenAI API:', error.response?.data || error.message);
+    
+    if (error.response?.data) {
+      console.error('Full error response:', JSON.stringify(error.response.data));
+    }
+    
+    if (error.config) {
+      console.error('Request URL:', error.config.url);
+      // Log request headers without the Authorization header
+      const safeHeaders = { ...error.config.headers };
+      if (safeHeaders.Authorization) safeHeaders.Authorization = '[REDACTED]';
+      console.error('Request headers:', safeHeaders);
+    }
     
     return res.status(error.response?.status || 500).json({ 
       error: error.response?.data?.error?.message || 'Failed to get a response from OpenAI' 
