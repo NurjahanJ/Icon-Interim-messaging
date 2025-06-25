@@ -8,10 +8,13 @@ import logo from './images/logo.png';
 function App() {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [conversations, setConversations] = useState([
     { id: '1', title: 'New Chat' },
   ]);
+  // eslint-disable-next-line no-unused-vars
   const [currentConversationId, setCurrentConversationId] = useState('1');
+  // eslint-disable-next-line no-unused-vars
   const [showEmptyState, setShowEmptyState] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const messagesEndRef = useRef(null);
