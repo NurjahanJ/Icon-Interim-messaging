@@ -10,6 +10,7 @@ const ChatInput = ({ onSendMessage, disabled }) => {
   const [isInputActive, setIsInputActive] = useState(false);
   const [toolsMenuPosition, setToolsMenuPosition] = useState({ top: 0, left: 0 });
   const [fileMenuPosition, setFileMenuPosition] = useState({ top: 0, left: 0 });
+  const [isSaveEarthActive, setIsSaveEarthActive] = useState(false);
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
   const fileMenuRef = useRef(null);
@@ -257,6 +258,20 @@ const ChatInput = ({ onSendMessage, disabled }) => {
               {isToolsMenuOpen && (
                 <div ref={toolsMenuRef} className="fixed w-64 rounded-xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50" style={{ top: `${toolsMenuPosition.top}px`, left: `${toolsMenuPosition.left}px`, maxHeight: '300px', overflowY: 'auto', transform: 'translateY(-100%)', marginTop: '-10px' }}>
                   <div className="py-2" role="menu" aria-orientation="vertical">
+                    <button 
+                      className={`flex items-center w-full px-4 py-3 text-sm text-left ${isSaveEarthActive ? 'text-green-700 bg-green-50' : 'text-gray-700 hover:bg-gray-100'}`} 
+                      role="menuitem"
+                      onClick={() => {
+                        setIsSaveEarthActive(!isSaveEarthActive);
+                        setIsToolsMenuOpen(false);
+                      }}
+                    >
+                      <svg className="mr-3 h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="10" stroke={isSaveEarthActive ? "#15803d" : "currentColor"} strokeWidth="1.5"/>
+                        <path d="M12 6C9 6 7 9 7 12C7 15 10 18 12 18C14 18 17 15 17 12C17 9 15 6 12 6Z" stroke={isSaveEarthActive ? "#15803d" : "currentColor"} strokeWidth="1.5"/>
+                      </svg>
+                      Save the Earth
+                    </button>
                     <button className="flex items-center w-full px-4 py-3 text-sm text-left text-gray-700 hover:bg-gray-100" role="menuitem">
                       <svg className="mr-3 h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M9.5 19.5V18H4.5C3.4 18 2.5 17.1 2.5 16V5C2.5 3.9 3.4 3 4.5 3H19.5C20.6 3 21.5 3.9 21.5 5V16C21.5 17.1 20.6 18 19.5 18H14.5V19.5H9.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -293,6 +308,22 @@ const ChatInput = ({ onSendMessage, disabled }) => {
                 </div>
               )}
             </div>
+            
+            {/* Save button - only shows when active */}
+            {isSaveEarthActive && (
+              <button
+                type="button"
+                onClick={() => setIsSaveEarthActive(false)}
+                className="flex items-center ml-2 text-green-600 hover:text-green-700"
+                disabled={disabled || hasReachedLimit}
+              >
+                <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5"/>
+                  <path d="M12 6C9 6 7 9 7 12C7 15 10 18 12 18C14 18 17 15 17 12C17 9 15 6 12 6Z" stroke="currentColor" strokeWidth="1.5"/>
+                </svg>
+                <span className="ml-1 text-sm">Save</span>
+              </button>
+            )}
             
             {/* Hidden spacer to maintain layout */}
             <div className="flex-grow px-2"></div>
