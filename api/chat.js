@@ -1,9 +1,6 @@
 // Serverless function for OpenAI chat API
 const axios = require('axios');
 
-// Log to help with debugging
-console.log('Serverless function api/chat.js is being executed');
-
 // This function will be executed when the endpoint is called
 module.exports = async (req, res) => {
   // Set CORS headers
@@ -35,11 +32,8 @@ module.exports = async (req, res) => {
     const apiKey = process.env.OPENAI_API_KEY;
     
     if (!apiKey) {
-      console.error('OPENAI_API_KEY is not configured in environment variables');
       return res.status(500).json({ error: 'API key not configured' });
     }
-    
-    console.log(`Making OpenAI API request with model: ${model}`);
     
     // Call OpenAI API
     const response = await axios.post(
@@ -60,8 +54,15 @@ module.exports = async (req, res) => {
     
     return res.json(response.data);
   } catch (error) {
-    console.error('Error calling OpenAI API:', error.response?.data || error.message);
+    // Enhanced error logging (combined from both branches)
+    console.error('Error calling OpenAI API:', {
+      message: error.message,
+      status: error.response?.status,
+      data: error.response?.data,
+      stack: error.stack
+    });
     
+    // Additional detailed logging from sustainability-ui branch
     if (error.response?.data) {
       console.error('Full error response:', JSON.stringify(error.response.data));
     }
@@ -74,8 +75,27 @@ module.exports = async (req, res) => {
       console.error('Request headers:', safeHeaders);
     }
     
-    return res.status(error.response?.status || 500).json({ 
-      error: error.response?.data?.error?.message || 'Failed to get a response from OpenAI' 
-    });
+    // Check for specific error types
+    if (error.response?.status === 401) {
+      return res.status(401).json({ 
+        error: 'Authentication error: Invalid API key or unauthorized access',
+        details: error.response?.data?.error?.message
+      });
+    } else if (error.response?.status === 429) {
+      return res.status(429).json({ 
+        error: 'Rate limit exceeded: Too many requests to OpenAI API',
+        details: error.response?.data?.error?.message
+      });
+    } else if (!process.env.OPENAI_API_KEY) {
+      return res.status(500).json({ 
+        error: 'Configuration error: OpenAI API key is not set in environment variables'
+      });
+    } else {
+      return res.status(error.response?.status || 500).json({ 
+        error: error.response?.data?.error?.message || 'Failed to get a response from OpenAI',
+        details: 'Check server logs for more information'
+      });
+    }
   }
 };
+

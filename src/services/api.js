@@ -5,8 +5,15 @@ import axios from 'axios';
  * This service handles sending messages to the API and receiving responses
  */
 
+// Determine the appropriate API URL based on environment
+const isVercel = window.location.hostname.includes('vercel.app');
+
 // API endpoint for the serverless function
-const API_URL = '/api/chat';
+// In Vercel, we need to use the absolute path to ensure it hits the correct endpoint
+const API_URL = isVercel ? '/api/chat' : '/api/chat';
+
+// Add debugging to help troubleshoot API issues
+console.log(`Using API URL: ${API_URL} (isVercel: ${isVercel})`);
 
 /**
  * Send a conversation to the OpenAI API
@@ -16,12 +23,22 @@ const API_URL = '/api/chat';
  */
 export const sendConversation = async (messages, modelId = 'gpt-4o') => {
   try {
+    console.log(`Sending request to ${API_URL} with model: ${modelId}`);
+    
     const response = await axios.post(API_URL, { messages, modelId });
+    console.log('API response received:', response.status);
     return response.data;
   } catch (error) {
-    console.error('Error sending conversation to API:', error);
+    console.error('Error sending conversation to API:', {
+      message: error.message,
+      status: error.response?.status,
+      data: error.response?.data,
+      url: API_URL
+    });
+    
     throw new Error(
       error.response?.data?.error || 
+      error.response?.data?.details ||
       'Failed to get a response. Please try again later.'
     );
   }
