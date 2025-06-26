@@ -1,4 +1,4 @@
-// Enhanced Vercel deployment script with debugging
+// Enhanced Vercel deployment script with debugging for simplified API configuration
 const { execSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');

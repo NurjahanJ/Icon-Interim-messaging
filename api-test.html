@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Test Page</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    h1 {
+      color: #333;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      margin-bottom: 10px;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    pre {
+      background-color: #f5f5f5;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    .error {
+      color: #d32f2f;
+      background-color: #ffebee;
+      padding: 10px;
+      border-radius: 4px;
+      margin-top: 10px;
+    }
+    .success {
+      color: #388e3c;
+      background-color: #e8f5e9;
+      padding: 10px;
+      border-radius: 4px;
+      margin-top: 10px;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>API Test Page</h1>
+  <p>Use this page to test your API endpoint before deploying to Vercel.</p>
+  
+  <div class="container">
+    <div class="card">
+      <h2>Environment Information</h2>
+      <div id="env-info"></div>
+    </div>
+    
+    <div class="card">
+      <h2>Test API Endpoint</h2>
+      <div>
+        <label for="endpoint">API Endpoint:</label>
+        <input type="text" id="endpoint" value="/api/chat" style="width: 100%; padding: 8px; margin-bottom: 10px;">
+      </div>
+      <div>
+        <label for="message">Message:</label>
+        <textarea id="message" placeholder="Type a message to send to the API...">Hello, how are you?</textarea>
+      </div>
+      <button id="send-btn">Send Request</button>
+      <div id="result-container" class="hidden">
+        <h3>Response:</h3>
+        <div id="status"></div>
+        <pre id="result"></pre>
+      </div>
+      <div id="error-container" class="hidden error">
+        <h3>Error:</h3>
+        <div id="error-message"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Display environment information
+    const envInfo = document.getElementById('env-info');
+    envInfo.innerHTML = `
+      <ul>
+        <li><strong>Hostname:</strong> ${window.location.hostname}</li>
+        <li><strong>Protocol:</strong> ${window.location.protocol}</li>
+        <li><strong>Port:</strong> ${window.location.port || '(default)'}</li>
+        <li><strong>Full URL:</strong> ${window.location.href}</li>
+      </ul>
+    `;
+
+    // Handle send button click
+    document.getElementById('send-btn').addEventListener('click', async () => {
+      const endpoint = document.getElementById('endpoint').value.trim();
+      const message = document.getElementById('message').value.trim();
+      const resultContainer = document.getElementById('result-container');
+      const errorContainer = document.getElementById('error-container');
+      const statusEl = document.getElementById('status');
+      const resultEl = document.getElementById('result');
+      const errorMessageEl = document.getElementById('error-message');
+      
+      if (!message) {
+        errorContainer.classList.remove('hidden');
+        resultContainer.classList.add('hidden');
+        errorMessageEl.textContent = 'Please enter a message.';
+        return;
+      }
+      
+      // Show loading state
+      document.getElementById('send-btn').textContent = 'Sending...';
+      document.getElementById('send-btn').disabled = true;
+      errorContainer.classList.add('hidden');
+      resultContainer.classList.remove('hidden');
+      statusEl.textContent = 'Sending request...';
+      resultEl.textContent = '';
+      
+      try {
+        const startTime = Date.now();
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            messages: [
+              { role: 'system', content: 'You are a helpful assistant.' },
+              { role: 'user', content: message }
+            ],
+            modelId: 'gpt-4o'
+          })
+        });
+        
+        const endTime = Date.now();
+        const duration = endTime - startTime;
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          statusEl.innerHTML = `<div class="success">✅ Success (${response.status} ${response.statusText}) - Response time: ${duration}ms</div>`;
+          resultEl.textContent = JSON.stringify(data, null, 2);
+        } else {
+          statusEl.innerHTML = `<div class="error">❌ Error (${response.status} ${response.statusText}) - Response time: ${duration}ms</div>`;
+          resultEl.textContent = JSON.stringify(data, null, 2);
+        }
+      } catch (error) {
+        errorContainer.classList.remove('hidden');
+        errorMessageEl.textContent = `Network error: ${error.message}. Make sure your API server is running.`;
+        statusEl.innerHTML = `<div class="error">❌ Request Failed</div>`;
+      } finally {
+        document.getElementById('send-btn').textContent = 'Send Request';
+        document.getElementById('send-btn').disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

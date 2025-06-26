@@ -57,7 +57,7 @@ export const sendConversation = async (messages, modelId = 'gpt-4o') => {
 };
 
 /**
- * Format a new user message and add it to the conversation
+ * Format a new user message
  * @param {string} content - The content of the user's message
  * @returns {Object} - A message object with role and content
  */
