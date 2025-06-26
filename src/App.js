@@ -72,26 +72,42 @@ function App() {
 
       setMessages([...messages, userMessage, assistantMessage]);
     } catch (err) {
+      // Enhanced error logging with more details
       console.error('Error sending message:', {
         message: err.message,
         cause: err.cause,
-        stack: err.stack
+        stack: err.stack,
+        originalError: err.toString(),
+        responseData: err.response?.data
       });
       
       // Extract a more useful error message if available
       let errorText = "Sorry, something went wrong.";
+      let debugInfo = "";
       
       if (err.message.includes('API key')) {
         errorText = "Error: OpenAI API key is missing or invalid. Please check your server configuration.";
+        debugInfo = "API key error";
       } else if (err.message.includes('rate limit')) {
         errorText = "Error: OpenAI rate limit exceeded. Please try again later.";
+        debugInfo = "Rate limit error";
       } else if (err.message.includes('network') || err.message.includes('timeout')) {
         errorText = "Error: Network issue when connecting to the API. Please check your connection.";
+        debugInfo = "Network error";
+      } else {
+        // Add more detailed error information in development
+        if (process.env.NODE_ENV !== 'production') {
+          debugInfo = `Error details: ${err.message}`;
+          errorText += " " + debugInfo;
+        }
       }
+      
+      console.log(`Error occurred: ${debugInfo || 'Unknown error'}`);
       
       const errorMessage = createAssistantMessage(errorText);
       errorMessage.timestamp = new Date().toISOString();
       errorMessage.isError = true; // Flag to style error messages differently
+      errorMessage.debugInfo = debugInfo; // Add debug info for potential logging
       setMessages([...messages, userMessage, errorMessage]);
     } finally {
       setLoading(false);
